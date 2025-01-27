@@ -1,4 +1,4 @@
-from app import db
+from app import db, ma
 
 
 class Product(db.Model):
@@ -11,3 +11,10 @@ class Product(db.Model):
     category_id = db.Column("category_id", db.Integer, db.ForeignKey("categories.category_id"), nullable=False)
     created_at = db.Column("created_at", db.DateTime, default=db.func.now())
     updated_at = db.Column("updated_at", db.DateTime, default=db.func.now(), onupdate=db.func.now())
+
+
+class ProductSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Product
+        include_fk = True
+        load_instance = True

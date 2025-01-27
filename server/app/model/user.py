@@ -1,4 +1,4 @@
-from app import db
+from app import db, ma
 
 
 class User(db.Model):
@@ -10,3 +10,9 @@ class User(db.Model):
     email = db.Column("email", db.String(150), nullable=False)
     phone = db.Column("phone", db.String(15), nullable=True)
     created_at = db.Column("created_at", db.DateTime, default=db.func.now())
+
+
+class UserSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = User
+        load_instance = True

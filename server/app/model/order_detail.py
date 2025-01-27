@@ -1,4 +1,4 @@
-from app import db
+from app import db, ma
 
 
 class OrderDetail(db.Model):
@@ -9,3 +9,10 @@ class OrderDetail(db.Model):
     product_id = db.Column("product_id", db.Integer, db.ForeignKey("products.product_id"), nullable=False)
     quantity = db.Column("quantity", db.Integer, nullable=False)
     price = db.Column("price", db.Numeric(10, 2), nullable=False)
+
+
+class OrderDetailSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = OrderDetail
+        include_fk = True
+        load_instance = True

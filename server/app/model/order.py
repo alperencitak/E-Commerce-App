@@ -1,6 +1,5 @@
 from enum import Enum
-
-from app import db
+from app import db, ma
 
 
 class OrderStatus(Enum):
@@ -17,3 +16,10 @@ class Order(db.Model):
     total_amount = db.Column("total_amount", db.Numeric(10, 2), nullable=False)
     status = db.Column("status", db.Enum(OrderStatus), default=OrderStatus.PENDING)
     order_date = db.Column("order_date", db.DateTime, default=db.func.now())
+
+
+class OrderSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Order
+        include_fk = True
+        load_instance = True

@@ -1,4 +1,4 @@
-from app import db
+from app import db, ma
 
 
 class Address(db.Model):
@@ -11,3 +11,10 @@ class Address(db.Model):
     district = db.Column("district", db.String(100), nullable=False)
     city = db.Column("city", db.String(100), nullable=False)
     country = db.Column("country", db.String(100), nullable=False)
+
+
+class AddressSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Address
+        include_fk = True
+        load_instance = True
