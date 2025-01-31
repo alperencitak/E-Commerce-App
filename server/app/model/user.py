@@ -1,4 +1,5 @@
 from app import db, ma
+from marshmallow import fields
 
 
 class User(db.Model):
@@ -13,6 +14,8 @@ class User(db.Model):
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
+    created_at = fields.String()
+
     class Meta:
         model = User
         load_instance = True
