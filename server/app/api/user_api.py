@@ -23,5 +23,4 @@ class UserResource(MethodView):
         try:
             return UserService.get_by_id(user_id)
         except NotFound as e:
-            abort(404,str(e))
-
+            abort(404, str(e))
