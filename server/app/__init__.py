@@ -3,11 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from config import Config
+from flask_smorest import Api
 
 
 db = SQLAlchemy()
 migrate = Migrate()
 ma = Marshmallow()
+api = Api()
 
 
 def create_app():
@@ -17,6 +19,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     ma.init_app(app)
+    api.init_app(app)
 
     from .api.user_api import user_bp
     from .api.category_api import category_bp
@@ -25,7 +28,7 @@ def create_app():
     from .api.product_api import product_bp
     from .api.order_detail_api import order_detail_bp
 
-    app.register_blueprint(user_bp, url_prefix="/user")
+    app.register_blueprint(user_bp)
     app.register_blueprint(category_bp, url_prefix="/category")
     app.register_blueprint(order_bp, url_prefix="/order")
     app.register_blueprint(address_bp, url_prefix="/address")

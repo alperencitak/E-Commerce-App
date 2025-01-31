@@ -1,15 +1,21 @@
-from flask import Blueprint, request, jsonify
+from flask.views import MethodView
 from app.service.user_service import UserService
+from app.model.user import UserSchema
+from flask_smorest import Blueprint
+from http import HTTPStatus
 
-user_bp = Blueprint("user_api", __name__)
+user_bp = Blueprint("users", "users", url_prefix="/user", description="User management API")
 
 
 @user_bp.route("/")
-def get_all():
-    return jsonify(UserService.get_all()), 200
+class UserListResource(MethodView):
+    @user_bp.response(HTTPStatus.OK, UserSchema(many=True))
+    def get(self):
+        return UserService.get_all()
 
 
-@user_bp.route("/id")
-def get_by_id():
-    user_id = request.args.get('id')
-    return jsonify(UserService.get_by_id(user_id)), 200
+@user_bp.route("/<int:user_id>")
+class UserResource(MethodView):
+    @user_bp.response(HTTPStatus.OK, UserSchema)
+    def get(self, user_id):
+        return UserService.get_by_id(user_id)
