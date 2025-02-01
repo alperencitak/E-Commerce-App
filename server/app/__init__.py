@@ -29,9 +29,9 @@ def create_app():
     from .api.order_detail_api import order_detail_bp
 
     app.register_blueprint(user_bp)
+    app.register_blueprint(address_bp)
     app.register_blueprint(category_bp, url_prefix="/category")
     app.register_blueprint(order_bp, url_prefix="/order")
-    app.register_blueprint(address_bp, url_prefix="/address")
     app.register_blueprint(product_bp, url_prefix="/product")
     app.register_blueprint(order_detail_bp, url_prefix="/order-detail")
 
