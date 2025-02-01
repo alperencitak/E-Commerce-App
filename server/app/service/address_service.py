@@ -1,62 +1,55 @@
 from marshmallow import ValidationError
+from werkzeug.exceptions import NotFound
 
 from app.model.address import Address, AddressSchema
 from app import db
 
 
 class AddressService:
-    @staticmethod
-    def get_by_id(address_id):
-        address = Address.query.filter_by(address_id=address_id).first()
+    address_schema = AddressSchema()
+    addresses_schema = AddressSchema(many=True)
+
+    @classmethod
+    def get_by_id(cls, address_id):
+        address = db.session.get(Address, address_id)
         if not address:
-            return ValueError(f"Address not found by id: {address_id}")
-        address_schema = AddressSchema()
-        return address_schema.dump(address)
+            return NotFound(f"Address not found by id: {address_id}")
+        return cls.address_schema.dump(address)
 
-    @staticmethod
-    def get_by_user_id(user_id):
-        address = Address.query.filter_by(user_id=user_id).first()
-        if not address:
-            return ValueError(f"Address not found by user id: {user_id}")
-        address_schema = AddressSchema()
-        return address_schema.dump(address)
+    @classmethod
+    def get_by_user_id(cls, user_id):
+        addresses = db.session.scalars(db.select(Address).where(Address.user_id == user_id)).all()
+        return cls.addresses_schema.dump(addresses)
 
-    @staticmethod
-    def add(data):
-        address_schema = AddressSchema()
-
-        try:
-            address = address_schema.load(data)
-        except ValidationError as e:
-            return {"errors": e.messages}, 400
-
-        db.session.add(address)
+    @classmethod
+    def add(cls, data):
+        db.session.add(data)
         db.session.commit()
 
-        return {"message": "Address added."}
+        return cls.address_schema.dump(data)
 
-    @staticmethod
-    def delete_by_id(address_id):
-        address = Address.query.filter_by(address_id=address_id).first()
+    @classmethod
+    def delete_by_id(cls, address_id):
+        address = db.session.get(Address, address_id)
         if not address:
-            return ValueError(f"Address not found by id: {address_id}")
+            return NotFound(f"Address not found by id: {address_id}")
 
         db.session.delete(address)
         db.session.commit()
 
         return {"message": "Address removed."}
 
-    @staticmethod
-    def update(data):
-        address_id = data.get('address_id')
-        address = Address.query.filter_by(address_id=address_id).first()
+    @classmethod
+    def update(cls, data):
+        address_id = data.address_id
+        address = db.session.get(Address, address_id)
         if not address:
-            return ValueError(f"Address not found by id: {address_id}")
+            return NotFound(f"Address not found by id: {address_id}")
 
-        for key, value in data.items():
-            if key != 'address_id' and hasattr(address, key):
+        for key, value in data.__dict__.items():
+            if hasattr(address, key):
                 setattr(address, key, value)
 
         db.session.commit()
 
-        return {"message": "Address updated."}
+        return cls.address_schema.dump(address)
