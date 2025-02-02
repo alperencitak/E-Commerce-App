@@ -1,4 +1,3 @@
-from marshmallow import ValidationError
 from werkzeug.exceptions import NotFound
 
 from app.model.address import Address, AddressSchema

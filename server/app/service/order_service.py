@@ -1,62 +1,53 @@
-from marshmallow import ValidationError
+from werkzeug.exceptions import NotFound
 
 from app.model.order import Order, OrderSchema
 from app import db
 
 
 class OrderService:
-    @staticmethod
-    def get_by_id(order_id):
-        order = Order.query.filter_by(order_id=order_id).first()
+    order_schema = OrderSchema()
+    orders_schema = OrderSchema(many=True)
+
+    @classmethod
+    def get_by_id(cls, order_id):
+        order = db.session.get(Order, order_id)
         if not order:
-            return ValueError(f"Order not found by id: {order_id}")
-        order_schema = OrderSchema()
-        return order_schema.dump(order)
+            return NotFound(f"Order not found by id: {order_id}")
+        return cls.order_schema.dump(order)
 
-    @staticmethod
-    def get_by_user_id(user_id):
-        orders = Order.query.filter_by(user_id=user_id).all()
-        if not orders:
-            return ValueError(f"Orders not found by user id: {user_id}")
-        order_schema = OrderSchema(many=True)
-        return order_schema.dump(orders)
+    @classmethod
+    def get_by_user_id(cls, user_id):
+        orders = db.session.scalars(db.select(Order).where(Order.user_id == user_id)).all()
+        return cls.orders_schema.dump(orders)
 
-    @staticmethod
-    def add(data):
-        order_schema = OrderSchema()
-
-        try:
-            order = order_schema.load(data)
-        except ValidationError as e:
-            return {"errors": e.messages}, 400
-
-        db.session.add(order)
+    @classmethod
+    def add(cls, data):
+        db.session.add(data)
         db.session.commit()
+        return cls.order_schema.dump(data)
 
-        return {"message": "Order added."}
-
-    @staticmethod
-    def delete_by_id(order_id):
-        order = Order.query.filter_by(order_id=order_id).first()
+    @classmethod
+    def delete_by_id(cls, order_id):
+        order = db.session.get(Order, order_id)
         if not order:
-            return ValueError(f"Order not found by id: {order_id}")
+            return NotFound(f"Order not found by id: {order_id}")
 
         db.session.delete(order)
         db.session.commit()
 
         return {"message": "Order removed."}
 
-    @staticmethod
-    def update(data):
-        order_id = data.get('order_id')
-        order = Order.query.filter_by(order_id=order_id).first()
+    @classmethod
+    def update(cls, data):
+        order_id = data.order_id
+        order = db.session.get(Order, order_id)
         if not order:
-            return ValueError(f"Order not found by id: {order_id}")
+            return NotFound(f"Order not found by id: {order_id}")
 
-        for key, value in data.items():
-            if key != 'order_id' and hasattr(order, key):
+        for key, value in data.__dict__.items():
+            if hasattr(order, key):
                 setattr(order, key, value)
 
         db.session.commit()
 
-        return {"message": "Order updated."}
+        return cls.order_schema.dump(data)

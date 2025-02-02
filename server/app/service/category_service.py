@@ -1,59 +1,52 @@
-from marshmallow import ValidationError
+from werkzeug.exceptions import NotFound
 
 from app.model.category import Category, CategorySchema
 from app import db
 
 
 class CategoryService:
-    @staticmethod
-    def get_all():
-        categories = Category.query.all()
-        category_schema = CategorySchema(many=True)
-        return category_schema.dump(categories)
+    category_schema = CategorySchema()
+    categories_schema = CategorySchema(many=True)
 
-    @staticmethod
-    def get_by_id(category_id):
-        category = Category.query.filter_by(category_id=category_id).first()
+    @classmethod
+    def get_all(cls):
+        categories = db.session.scalars(db.select(Category)).all()
+        return cls.categories_schema.dump(categories)
+
+    @classmethod
+    def get_by_id(cls, category_id):
+        category = db.session.get(Category, category_id)
         if not category:
-            return ValueError(f"Category not found by id: {category_id}")
-        category_schema = CategorySchema()
-        return category_schema.dump(category)
+            return NotFound(f"Category not found by id: {category_id}")
+        return cls.category_schema.dump(category)
 
-    @staticmethod
-    def add(data):
-        category_schema = CategorySchema()
-
-        try:
-            category = category_schema.load(data)
-        except ValidationError as e:
-            return {"errors": e.messages}, 400
-
-        db.session.add(category)
+    @classmethod
+    def add(cls, data):
+        db.session.add(data)
         db.session.commit()
 
-        return {"message": "Category added."}
+        return cls.category_schema.dump(data)
 
-    @staticmethod
-    def delete_by_id(category_id):
-        category = Category.query.filter_by(category_id=category_id).first()
+    @classmethod
+    def delete_by_id(cls, category_id):
+        category = db.session.get(Category, category_id)
         if not category:
-            return ValueError(f"Category not found by id: {category_id}")
+            return NotFound(f"Category not found by id: {category_id}")
 
         db.session.delete(category)
         db.session.commit()
 
         return {"message": "Category removed."}
 
-    @staticmethod
-    def update(data):
-        category_id = data.get('category_id')
-        name = data.get('name')
-        category = Category.query.filter_by(category_id=category_id).first()
+    @classmethod
+    def update(cls, data):
+        category_id = data.category_id
+        name = data.name
+        category = db.session.get(Category, category_id)
         if not category:
-            return ValueError(f"Category not found by id: {category_id}")
+            return NotFound(f"Category not found by id: {category_id}")
 
         category.name = name
-
         db.session.commit()
 
-        return {"message": "Category updated."}
+        return cls.category_schema.dump(data)
