@@ -1,3 +1,5 @@
+from marshmallow import fields
+
 from app import db, ma
 
 
@@ -14,6 +16,8 @@ class Product(db.Model):
 
 
 class ProductSchema(ma.SQLAlchemyAutoSchema):
+    created_at = fields.String()
+    updated_at = fields.String()
     class Meta:
         model = Product
         include_fk = True
