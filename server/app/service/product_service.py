@@ -19,7 +19,7 @@ class ProductService:
     @classmethod
     def get_by_category_id(cls, category_id):
         products = db.session.scalars(db.select(Product).where(Product.category_id == category_id)).all()
-        return cls.product_schema.dump(products)
+        return cls.products_schema.dump(products)
 
     @classmethod
     def add(cls, data):
