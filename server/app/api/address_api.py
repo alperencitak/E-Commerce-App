@@ -7,7 +7,7 @@ from flask.views import MethodView
 address_bp = Blueprint("addresses", "addresses", url_prefix="/address", description="Address Management API")
 
 
-@address_bp.route("/id/<int:address_id>")
+@address_bp.route("/<int:address_id>")
 class AddressResponse(MethodView):
     @address_bp.response(HTTPStatus.OK, AddressSchema)
     def get(self, address_id):
@@ -26,7 +26,6 @@ class AddAddressResponse(MethodView):
     @address_bp.response(HTTPStatus.CREATED, AddressSchema)
     @address_bp.arguments(AddressSchema)
     def post(self, data):
-        print(data)
         return AddressService.add(data)
 
 
