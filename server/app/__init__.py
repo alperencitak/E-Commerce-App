@@ -30,9 +30,9 @@ def create_app():
 
     app.register_blueprint(user_bp)
     app.register_blueprint(address_bp)
-    app.register_blueprint(category_bp, url_prefix="/category")
-    app.register_blueprint(order_bp, url_prefix="/order")
-    app.register_blueprint(product_bp, url_prefix="/product")
-    app.register_blueprint(order_detail_bp, url_prefix="/order-detail")
+    app.register_blueprint(category_bp)
+    app.register_blueprint(order_bp)
+    app.register_blueprint(product_bp)
+    app.register_blueprint(order_detail_bp)
 
     return app
