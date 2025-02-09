@@ -12,14 +12,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.alperencitak.e_commerce_app.ui.theme.ECommerceAppTheme
+import com.alperencitak.e_commerce_app.view.LoginPage
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ECommerceAppTheme {
-                
+                LoginPage()
             }
         }
     }
