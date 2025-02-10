@@ -27,7 +27,9 @@ def create_app():
     from .api.address_api import address_bp
     from .api.product_api import product_bp
     from .api.order_detail_api import order_detail_bp
+    from .api.auth_api import auth_bp
 
+    app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(address_bp)
     app.register_blueprint(category_bp)
