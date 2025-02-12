@@ -6,6 +6,9 @@ import retrofit2.http.Path
 
 interface UserApiService {
 
+    @GET("user/")
+    suspend fun getAllUser(): List<User>
+
     @GET("user/{id}")
     suspend fun getUserById(
         @Path("id") id: Int
