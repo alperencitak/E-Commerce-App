@@ -14,4 +14,8 @@ class UserRepository @Inject constructor(
         return api.getUserById(id=id)
     }
 
+    suspend fun fetchAllUser(): List<User>{
+        return api.getAllUser()
+    }
+
 }
