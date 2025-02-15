@@ -2,6 +2,7 @@ from werkzeug.exceptions import NotFound
 
 from app.model.product import Product, ProductSchema
 from app import db
+from app.service.image_service import ImageService
 
 
 class ProductService:
@@ -22,10 +23,26 @@ class ProductService:
         return cls.products_schema.dump(products)
 
     @classmethod
-    def add(cls, data):
-        db.session.add(data)
+    def add(cls, data, file=None):
+        image_url = None
+        if file:
+            image_url, error = ImageService.save_image(file)
+            if error:
+                return {"error": error}
+        else:
+            return {"error": "File required"}
+
+        product = Product(
+            name=data["name"],
+            price=data["price"],
+            stock=data.get("stock", 10),
+            category_id=data["category_id"],
+            image_url=image_url
+        )
+
+        db.session.add(product)
         db.session.commit()
-        return cls.product_schema.dump(data)
+        return cls.product_schema.dump(product)
 
     @classmethod
     def delete_by_id(cls, product_id):
@@ -39,7 +56,15 @@ class ProductService:
         return {"message": "Product removed."}
 
     @classmethod
-    def update(cls, data):
+    def update(cls, data, file=None):
+        image_url = None
+        if file:
+            image_url, error = ImageService.save_image(file)
+            if error:
+                return {"error": error}
+        else:
+            return {"error": "File required"}
+
         product_id = data.product_id
         product = db.session.get(Product, product_id)
         if not product:
@@ -51,4 +76,4 @@ class ProductService:
 
         db.session.commit()
 
-        return cls.product_schema.dump(data)
+        return cls.product_schema.dump(product)
