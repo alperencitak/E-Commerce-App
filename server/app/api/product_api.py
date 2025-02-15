@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 from flask.views import MethodView
+from flask import request
 from flask_smorest import Blueprint
 from app.service.product_service import ProductService
 from app.model.product import ProductSchema
@@ -25,9 +26,10 @@ class ProductWithCategoryResponse(MethodView):
 @product_bp.route("/add")
 class AddProductResponse(MethodView):
     @product_bp.response(HTTPStatus.CREATED, ProductSchema)
-    @product_bp.arguments(ProductSchema)
-    def post(self, data):
-        return ProductService.add(data)
+    def post(self):
+        data = request.form.to_dict()
+        file = request.files.get("file")
+        return ProductService.add(data, file)
 
 
 @product_bp.route("/delete/<int:product_id>")
@@ -41,6 +43,7 @@ class DeleteProductResponse(MethodView):
 @product_bp.route("/update")
 class UpdateProductResponse(MethodView):
     @product_bp.response(HTTPStatus.OK, ProductSchema)
-    @product_bp.arguments(ProductSchema)
-    def put(self, data):
-        return ProductService.update(data)
+    def put(self):
+        data = request.form.to_dict()
+        file = request.files.get("file")
+        return ProductService.update(data, file)
