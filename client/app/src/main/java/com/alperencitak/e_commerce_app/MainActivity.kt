@@ -43,50 +43,52 @@ fun ScaffoldWithNavBar(){
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                containerColor = Color.White
-            ) {
-                val itemColor = SoftBeige
-                NavigationBarItem(
-                    selected = currentRoute == "main",
-                    onClick = {},
-                    icon = { Icon(Icons.Default.Home, contentDescription = "Home Icon") },
-                    colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = itemColor,
-                        selectedIconColor = Color.White,
-                        unselectedIconColor = itemColor,
+            if(currentRoute != "login"){
+                NavigationBar(
+                    containerColor = Color.White
+                ) {
+                    val itemColor = SoftBeige
+                    NavigationBarItem(
+                        selected = currentRoute == "main",
+                        onClick = {},
+                        icon = { Icon(Icons.Default.Home, contentDescription = "Home Icon") },
+                        colors = NavigationBarItemDefaults.colors(
+                            indicatorColor = itemColor,
+                            selectedIconColor = Color.White,
+                            unselectedIconColor = itemColor,
+                        )
                     )
-                )
-                NavigationBarItem(
-                    selected = currentRoute == "search",
-                    onClick = {},
-                    icon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") },
-                    colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = itemColor,
-                        selectedIconColor = Color.White,
-                        unselectedIconColor = itemColor,
+                    NavigationBarItem(
+                        selected = currentRoute == "search",
+                        onClick = {},
+                        icon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") },
+                        colors = NavigationBarItemDefaults.colors(
+                            indicatorColor = itemColor,
+                            selectedIconColor = Color.White,
+                            unselectedIconColor = itemColor,
+                        )
                     )
-                )
-                NavigationBarItem(
-                    selected = currentRoute == "favorites",
-                    onClick = {},
-                    icon = { Icon(Icons.Default.Star, contentDescription = "Star Icon") },
-                    colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = itemColor,
-                        selectedIconColor = Color.White,
-                        unselectedIconColor = itemColor,
+                    NavigationBarItem(
+                        selected = currentRoute == "favorites",
+                        onClick = {},
+                        icon = { Icon(Icons.Default.Star, contentDescription = "Star Icon") },
+                        colors = NavigationBarItemDefaults.colors(
+                            indicatorColor = itemColor,
+                            selectedIconColor = Color.White,
+                            unselectedIconColor = itemColor,
+                        )
                     )
-                )
-                NavigationBarItem(
-                    selected = currentRoute == "account",
-                    onClick = {},
-                    icon = { Icon(Icons.Default.AccountCircle, contentDescription = "Account Icon") },
-                    colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = itemColor,
-                        selectedIconColor = Color.White,
-                        unselectedIconColor = itemColor,
+                    NavigationBarItem(
+                        selected = currentRoute == "account",
+                        onClick = {},
+                        icon = { Icon(Icons.Default.AccountCircle, contentDescription = "Account Icon") },
+                        colors = NavigationBarItemDefaults.colors(
+                            indicatorColor = itemColor,
+                            selectedIconColor = Color.White,
+                            unselectedIconColor = itemColor,
+                        )
                     )
-                )
+                }
             }
         }
     ){ paddingValues ->
