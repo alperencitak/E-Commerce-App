@@ -15,7 +15,7 @@ auth_bp = Blueprint("auths", "auths", url_prefix="/auth", description="Authentic
 class LoginResource(MethodView):
     @auth_bp.response(HTTPStatus.OK, UserSchema)
     @auth_bp.arguments(LoginSchema)
-    def get(self, data):
+    def post(self, data):
         return AuthService.login(data)
 
 
