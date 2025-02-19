@@ -41,9 +41,10 @@ class MainActivity : ComponentActivity() {
 fun ScaffoldWithNavBar(){
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    val barRoutes = listOf("main", "search")
     Scaffold(
         bottomBar = {
-            if(currentRoute != "login"){
+            if(barRoutes.contains(currentRoute)){
                 NavigationBar(
                     containerColor = Color.White
                 ) {
