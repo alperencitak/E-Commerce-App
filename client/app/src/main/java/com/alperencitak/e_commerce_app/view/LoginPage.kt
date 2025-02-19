@@ -1,6 +1,7 @@
 package com.alperencitak.e_commerce_app.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -34,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -41,6 +44,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.alperencitak.e_commerce_app.R
+import com.alperencitak.e_commerce_app.model.LoginRequest
+import com.alperencitak.e_commerce_app.model.RegisterRequest
 import com.alperencitak.e_commerce_app.ui.theme.Blue
 import com.alperencitak.e_commerce_app.ui.theme.DarkGreen
 import com.alperencitak.e_commerce_app.ui.theme.Gray
@@ -48,6 +53,7 @@ import com.alperencitak.e_commerce_app.ui.theme.LightBlue
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
 import com.alperencitak.e_commerce_app.ui.theme.LightGray
 import com.alperencitak.e_commerce_app.ui.theme.WhiteModern
+import com.alperencitak.e_commerce_app.utils.isValidEmail
 import com.alperencitak.e_commerce_app.viewmodel.AuthViewModel
 
 
@@ -64,12 +70,17 @@ fun LoginPage(navHostController: NavHostController) {
         )
     )
 
+    var page by remember { mutableIntStateOf(1) }
     var step by remember { mutableIntStateOf(1) }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var surname by remember { mutableStateOf("") }
+
+    if(registerResponse.value != null || loginResponse.value != null){
+        navHostController.navigate("main")
+    }
 
     Image(
         modifier = Modifier.fillMaxSize(),
@@ -94,28 +105,47 @@ fun LoginPage(navHostController: NavHostController) {
                 modifier = Modifier.padding(horizontal = 48.dp, vertical = 96.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                StepIndicator(step)
-                Spacer(modifier = Modifier.height(64.dp))
-                when(step){
-                    1 -> StepOne(email, phone) { newEmail, newPhone ->
-                        email = newEmail
-                        phone = newPhone
-                        step = 2
-                    }
-                    2 -> StepTwo(name, surname){ newName, newSurname, isNext ->
-                        if(isNext){
-                            name = newName
-                            surname = newSurname
-                            step = 3
-                        }else{
-                            step--
-                        }
-                    }
-                    3 -> StepThree(password){ localPassword, isNext ->
-                        if(isNext){
+                if(page == 1){
+                    Spacer(modifier = Modifier.height(64.dp))
+                    StepSignIn{ localEmail, localPassword ->
+                        val loginRequest = LoginRequest(
+                            email = localEmail,
                             password = localPassword
-                        }else{
-                            step--
+                        )
+                        authViewModel.login(loginRequest)
+                    }
+                }else{
+                    StepIndicator(step)
+                    Spacer(modifier = Modifier.height(64.dp))
+                    when(step){
+                        1 -> StepOne(email, phone) { newEmail, newPhone ->
+                            email = newEmail
+                            phone = newPhone
+                            step = 2
+                        }
+                        2 -> StepTwo(name, surname){ newName, newSurname, isNext ->
+                            if(isNext){
+                                name = newName
+                                surname = newSurname
+                                step = 3
+                            }else{
+                                step--
+                            }
+                        }
+                        3 -> StepThree(password){ localPassword, isNext ->
+                            if(isNext){
+                                password = localPassword
+                                val registerRequest = RegisterRequest(
+                                    email = email,
+                                    phone = phone,
+                                    first_name = name,
+                                    last_name = surname,
+                                    password = password
+                                )
+                                authViewModel.register(registerRequest)
+                            }else{
+                                step--
+                            }
                         }
                     }
                 }
@@ -127,12 +157,88 @@ fun LoginPage(navHostController: NavHostController) {
                         .padding(horizontal = 16.dp, vertical = 24.dp),
                 )
                 Text(
-                    text = "Not yet registered? SignUp Now",
+                    text = if(page == 2) "Already have an account? Sign in." else "Don't have an account? Sign up!",
                     fontSize = 16.sp,
                     color = Blue,
-                    fontFamily = font
+                    fontFamily = font,
+                    modifier = Modifier.clickable { page = 3 - page }
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun StepSignIn(onLogin: (String, String) -> Unit) {
+    var localEmail by remember { mutableStateOf("") }
+    var localPassword by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf(false) }
+    var emailError by remember { mutableStateOf(false) }
+    val font = FontFamily(
+        Font(
+            R.font.inter_regular
+        )
+    )
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        OutlinedTextField(
+            value = localEmail,
+            onValueChange = {
+                if(it.length < 56){
+                    localEmail = it
+                    emailError = false
+                }
+            },
+            label = { Text("Email", fontFamily = font) },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                unfocusedBorderColor = if (emailError) Color.Red else Blue,
+                focusedBorderColor = if (emailError) Color.Red else Blue
+            ),
+            singleLine = true,
+            modifier = Modifier.width(280.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedTextField(
+            value = localPassword,
+            onValueChange = {
+                if(it.length < 56){
+                    localPassword = it
+                    passwordError = false
+                }
+            },
+            label = { Text("Password", fontFamily = font) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                unfocusedBorderColor = if (passwordError) Color.Red else Blue,
+                focusedBorderColor = if (passwordError) Color.Red else Blue
+            ),
+            singleLine = true,
+            modifier = Modifier.width(280.dp)
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        Button(
+            onClick = {
+                if(isValidEmail(localEmail)){
+                    if(localPassword.length < 7){
+                        passwordError = true
+                    }else{
+                        onLogin(localEmail, localPassword)
+                    }
+                }else{
+                    emailError = true
+                }
+            },
+            colors = ButtonDefaults.elevatedButtonColors(
+                containerColor = LightBlue,
+            )
+        ) {
+            Text(text = "SIGN IN", color = Blue, fontFamily = font)
         }
     }
 }
@@ -176,6 +282,8 @@ fun StepIndicator(step: Int) {
 fun StepOne(email: String, phone: String, onNext: (String, String) -> Unit) {
     var localEmail by remember { mutableStateOf(email) }
     var localPhone by remember { mutableStateOf(phone) }
+    var emailError by remember { mutableStateOf(false) }
+    var phoneError by remember { mutableStateOf(false) }
     val font = FontFamily(
         Font(
             R.font.inter_regular
@@ -187,23 +295,57 @@ fun StepOne(email: String, phone: String, onNext: (String, String) -> Unit) {
     ) {
         OutlinedTextField(
             value = localEmail,
-            onValueChange = { localEmail = it },
-            label = { Text("Email", fontFamily = font) }
+            onValueChange = {
+                if(it.length < 56){
+                    localEmail = it
+                    emailError = false
+                }
+                            },
+            label = { Text("Email", fontFamily = font) },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                unfocusedBorderColor = if (emailError) Color.Red else Blue,
+                focusedBorderColor = if (emailError) Color.Red else Blue
+            ),
+            singleLine = true,
+            modifier = Modifier.width(280.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = localPhone,
-            onValueChange = { localPhone = it },
+            onValueChange = {
+                if(it.length < 56){
+                    localPhone = it
+                    phoneError = false
+                }
+                            },
             label = { Text("Phone") },
             leadingIcon = {
                 Text(text = "  +90 |", fontFamily = font)
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                unfocusedBorderColor = if (phoneError) Color.Red else Blue,
+                focusedBorderColor = if (phoneError) Color.Red else Blue
+            ),
+            singleLine = true,
+            modifier = Modifier.width(280.dp)
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(
             onClick = {
-                onNext(localEmail, localPhone)
+                if(isValidEmail(localEmail)){
+                    if(localPhone.length < 10){
+                        phoneError = true
+                    }else{
+                        onNext(localEmail, localPhone)
+                    }
+                }else{
+                    emailError = true
+                }
             },
             colors = ButtonDefaults.elevatedButtonColors(
                 containerColor = LightBlue,
@@ -218,6 +360,8 @@ fun StepOne(email: String, phone: String, onNext: (String, String) -> Unit) {
 fun StepTwo(name: String, surname: String, onNext: (String, String, Boolean) -> Unit) {
     var localName by remember { mutableStateOf(name) }
     var localSurname by remember { mutableStateOf(surname) }
+    var nameError by remember { mutableStateOf(false) }
+    var surnameError by remember { mutableStateOf(false) }
     val font = FontFamily(
         Font(
             R.font.inter_regular
@@ -228,14 +372,40 @@ fun StepTwo(name: String, surname: String, onNext: (String, String, Boolean) -> 
     ) {
         OutlinedTextField(
             value = localName,
-            onValueChange = { localName = it},
-            label = { Text("Name", fontFamily = font) }
+            onValueChange = {
+                if(it.length < 32){
+                    localName = it
+                    nameError = false
+                }
+                            },
+            label = { Text("Name", fontFamily = font) },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                unfocusedBorderColor = if (nameError) Color.Red else Blue,
+                focusedBorderColor = if (nameError) Color.Red else Blue
+            ),
+            singleLine = true,
+            modifier = Modifier.width(280.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = localSurname,
-            onValueChange = { localSurname = it },
-            label = { Text("Surname", fontFamily = font) }
+            onValueChange = {
+                if(it.length < 32){
+                    localSurname = it
+                    surnameError = false
+                }
+                            },
+            label = { Text("Surname", fontFamily = font) },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                unfocusedBorderColor = if (surnameError) Color.Red else Blue,
+                focusedBorderColor = if (surnameError) Color.Red else Blue
+            ),
+            singleLine = true,
+            modifier = Modifier.width(280.dp)
         )
         Spacer(modifier = Modifier.height(32.dp))
         Row {
@@ -252,7 +422,15 @@ fun StepTwo(name: String, surname: String, onNext: (String, String, Boolean) -> 
             Spacer(modifier = Modifier.width(16.dp))
             Button(
                 onClick = {
-                    onNext(localName, localSurname, true)
+                    if(localName.length < 3){
+                        nameError = true
+                    }else{
+                        if (localSurname.length < 3){
+                            surnameError = false
+                        }else{
+                            onNext(localName, localSurname, true)
+                        }
+                    }
                 },
                 colors = ButtonDefaults.elevatedButtonColors(
                     containerColor = LightBlue,
@@ -268,6 +446,7 @@ fun StepTwo(name: String, surname: String, onNext: (String, String, Boolean) -> 
 fun StepThree(password: String, onNext: (String, Boolean) -> Unit) {
     var localPassword by remember { mutableStateOf(password) }
     var localRepeatPassword by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf(false) }
     val font = FontFamily(
         Font(
             R.font.inter_regular
@@ -278,18 +457,44 @@ fun StepThree(password: String, onNext: (String, Boolean) -> Unit) {
     ) {
         OutlinedTextField(
             value = localPassword,
-            onValueChange = { localPassword = it },
+            onValueChange = {
+                if(it.length < 32){
+                    localPassword = it
+                    passwordError = false
+                }
+                            },
             label = { Text("Password", fontFamily = font) },
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                unfocusedBorderColor = if (passwordError) Color.Red else Blue,
+                focusedBorderColor = if (passwordError) Color.Red else Blue
+            ),
+            singleLine = true,
+            modifier = Modifier.width(280.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = localRepeatPassword,
-            onValueChange = { localRepeatPassword = it },
+            onValueChange = {
+                if(it.length < 32){
+                    localRepeatPassword = it
+                    passwordError = false
+                }
+                            },
             label = { Text("Repeat Password", fontFamily = font) },
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+                unfocusedBorderColor = if (passwordError) Color.Red else Blue,
+                focusedBorderColor = if (passwordError) Color.Red else Blue
+            ),
+            singleLine = true,
+            modifier = Modifier.width(280.dp)
         )
         Spacer(modifier = Modifier.height(32.dp))
         Row {
@@ -306,7 +511,15 @@ fun StepThree(password: String, onNext: (String, Boolean) -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Button(
                 onClick = {
-                    onNext(localPassword, true)
+                    if(localPassword.length > 6){
+                        if(localPassword == localRepeatPassword){
+                            onNext(localPassword, true)
+                        }else{
+                            passwordError = true
+                        }
+                    }else{
+                        passwordError = true
+                    }
                 },
                 colors = ButtonDefaults.elevatedButtonColors(
                     containerColor = LightBlue,
