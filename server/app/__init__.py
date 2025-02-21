@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from config import Config
 from flask_smorest import Api
+import os
 
 
 db = SQLAlchemy()
@@ -15,6 +16,7 @@ api = Api()
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'uploads')
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -28,6 +30,7 @@ def create_app():
     from .api.product_api import product_bp
     from .api.order_detail_api import order_detail_bp
     from .api.auth_api import auth_bp
+    from .api.image_api import image_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
@@ -36,5 +39,6 @@ def create_app():
     app.register_blueprint(order_bp)
     app.register_blueprint(product_bp)
     app.register_blueprint(order_detail_bp)
+    app.register_blueprint(image_bp)
 
     return app
