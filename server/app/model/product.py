@@ -23,3 +23,11 @@ class ProductSchema(ma.SQLAlchemyAutoSchema):
         model = Product
         include_fk = True
         load_instance = True
+
+
+class PaginationSchema(ma.Schema):
+    products = fields.List(fields.Nested(ProductSchema))
+    total = fields.Int()
+    pages = fields.Int()
+    current_page = fields.Int()
+    per_page = fields.Int()
