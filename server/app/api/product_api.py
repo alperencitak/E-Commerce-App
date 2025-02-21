@@ -4,7 +4,7 @@ from flask.views import MethodView
 from flask import request
 from flask_smorest import Blueprint
 from app.service.product_service import ProductService
-from app.model.product import ProductSchema
+from app.model.product import ProductSchema, PaginationSchema
 
 product_bp = Blueprint("products", "products", url_prefix="/product", description="Product Management API")
 
@@ -18,9 +18,11 @@ class ProductResponse(MethodView):
 
 @product_bp.route("/category/<int:category_id>")
 class ProductWithCategoryResponse(MethodView):
-    @product_bp.response(HTTPStatus.OK, ProductSchema(many=True))
+    @product_bp.response(HTTPStatus.OK, PaginationSchema)
     def get(self, category_id):
-        return ProductService.get_by_category_id(category_id)
+        page = request.args.get("page", default=1, type=int)
+        per_page = request.args.get("per_page", default=10, type=int)
+        return ProductService.get_by_category_id(category_id, page, per_page)
 
 
 @product_bp.route("/add")
