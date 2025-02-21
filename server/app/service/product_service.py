@@ -18,9 +18,16 @@ class ProductService:
         return cls.product_schema.dump(product)
 
     @classmethod
-    def get_by_category_id(cls, category_id):
-        products = db.session.scalars(db.select(Product).where(Product.category_id == category_id)).all()
-        return cls.products_schema.dump(products)
+    def get_by_category_id(cls, category_id, page=1, per_page=10):
+        query = db.select(Product).where(Product.category_id == category_id)
+        products = db.paginate(query, page=page, per_page=per_page, error_out=False)
+        return {
+            "products": cls.products_schema.dump(products.items),
+            "total": products.total,
+            "pages": products.pages,
+            "current_page": products.page,
+            "per_page": products.per_page
+        }
 
     @classmethod
     def add(cls, data, file=None):
