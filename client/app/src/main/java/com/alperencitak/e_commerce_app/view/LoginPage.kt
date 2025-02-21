@@ -78,10 +78,6 @@ fun LoginPage(navHostController: NavHostController) {
     var name by remember { mutableStateOf("") }
     var surname by remember { mutableStateOf("") }
 
-    if(registerResponse.value != null || loginResponse.value != null){
-        navHostController.navigate("main")
-    }
-
     Image(
         modifier = Modifier.fillMaxSize(),
         painter = painterResource(R.drawable.login_page_wp),
@@ -113,6 +109,10 @@ fun LoginPage(navHostController: NavHostController) {
                             password = localPassword
                         )
                         authViewModel.login(loginRequest)
+
+                        if(loginResponse.value != null){
+                            navHostController.navigate("main")
+                        }
                     }
                 }else{
                     StepIndicator(step)
@@ -143,6 +143,10 @@ fun LoginPage(navHostController: NavHostController) {
                                     password = password
                                 )
                                 authViewModel.register(registerRequest)
+
+                                if(registerResponse.value != null){
+                                    navHostController.navigate("main")
+                                }
                             }else{
                                 step--
                             }
