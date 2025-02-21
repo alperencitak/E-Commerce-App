@@ -1,6 +1,6 @@
 import os
 from werkzeug.utils import secure_filename
-from flask import current_app
+from flask import current_app, send_from_directory
 
 
 class ImageService:
@@ -20,9 +20,13 @@ class ImageService:
             return None, "Invalid file type"
 
         filename = secure_filename(file.filename)
-        file_path = os.path.join(cls.UPLOAD_FOLDER, filename)
+        file_path = os.path.join(current_app.route, filename)
 
-        os.makedirs(cls.UPLOAD_FOLDER, exist_ok=True)
+        os.makedirs(os.path.join(current_app.route, cls.UPLOAD_FOLDER), exist_ok=True)
         file.save(file_path)
 
         return f"/uploads/{filename}", None
+
+    @classmethod
+    def serve_image(cls, filename):
+        return send_from_directory("", filename)
