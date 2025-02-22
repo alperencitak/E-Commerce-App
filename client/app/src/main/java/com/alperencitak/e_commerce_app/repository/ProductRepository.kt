@@ -3,6 +3,7 @@ package com.alperencitak.e_commerce_app.repository
 import android.content.Context
 import com.alperencitak.e_commerce_app.api.ProductApiService
 import com.alperencitak.e_commerce_app.model.Product
+import com.alperencitak.e_commerce_app.model.ProductResponse
 import javax.inject.Inject
 
 class ProductRepository @Inject constructor(
@@ -14,8 +15,8 @@ class ProductRepository @Inject constructor(
         return api.getById(id)
     }
 
-    suspend fun fetchByCategoryId(categoryId: Int): List<Product>{
-        return api.getByCategoryId(categoryId)
+    suspend fun fetchByCategoryId(categoryId: Int, page: Int = 1, perPage: Int = 10): ProductResponse{
+        return api.getByCategoryId(categoryId, page, perPage)
     }
 
     suspend fun add(product: Product): Product {
