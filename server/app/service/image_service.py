@@ -4,8 +4,8 @@ from flask import current_app, send_from_directory
 
 
 class ImageService:
-    UPLOAD_FOLDER = "uploads"
-    ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
+    UPLOAD_FOLDER = os.path.join("app", "uploads")
+    ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 
     @classmethod
     def allowed_file(cls, filename):
@@ -20,9 +20,9 @@ class ImageService:
             return None, "Invalid file type"
 
         filename = secure_filename(file.filename)
-        file_path = os.path.join(current_app.route, filename)
+        file_path = os.path.join(cls.UPLOAD_FOLDER, filename)
 
-        os.makedirs(os.path.join(current_app.route, cls.UPLOAD_FOLDER), exist_ok=True)
+        os.makedirs(cls.UPLOAD_FOLDER, exist_ok=True)
         file.save(file_path)
 
         return f"/uploads/{filename}", None
