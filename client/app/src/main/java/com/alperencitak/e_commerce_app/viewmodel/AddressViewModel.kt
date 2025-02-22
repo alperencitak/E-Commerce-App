@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alperencitak.e_commerce_app.model.Address
 import com.alperencitak.e_commerce_app.repository.AddressRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class AddressViewModel @Inject constructor(
     private val addressRepository: AddressRepository
 ): ViewModel() {

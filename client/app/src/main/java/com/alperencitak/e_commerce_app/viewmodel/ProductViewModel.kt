@@ -3,12 +3,15 @@ package com.alperencitak.e_commerce_app.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alperencitak.e_commerce_app.model.Product
+import com.alperencitak.e_commerce_app.model.ProductResponse
 import com.alperencitak.e_commerce_app.repository.ProductRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class ProductViewModel @Inject constructor(
     private val productRepository: ProductRepository
 ): ViewModel() {
@@ -16,8 +19,8 @@ class ProductViewModel @Inject constructor(
     private val _product = MutableStateFlow<Product?>(null)
     val product: StateFlow<Product?> = _product
 
-    private val _productList = MutableStateFlow<List<Product>>(emptyList())
-    val productList: StateFlow<List<Product>> = _productList
+    private val _productList = MutableStateFlow<ProductResponse?>(null)
+    val productList: StateFlow<ProductResponse?> = _productList
 
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
@@ -35,11 +38,11 @@ class ProductViewModel @Inject constructor(
         }
     }
 
-    fun fetchByCategoryId(category_id: Int){
+    fun fetchByCategoryId(category_id: Int, page: Int = 1, perPage: Int = 10){
         viewModelScope.launch {
             try {
                 _loading.value = true
-                _productList.value = productRepository.fetchByCategoryId(category_id)
+                _productList.value = productRepository.fetchByCategoryId(category_id, page, perPage)
             }catch (e: Exception){
                 e.printStackTrace()
             }finally {
