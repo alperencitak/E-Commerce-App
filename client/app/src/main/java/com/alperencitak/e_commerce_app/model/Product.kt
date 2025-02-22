@@ -7,8 +7,9 @@ data class Product(
     val product_id: Int,
     val name: String,
     val price: BigDecimal,
-    val stock: Int = 10,
+    val stock: Int,
+    val image_url: String,
     val category_id: Int,
-    val created_at: LocalDateTime,
-    val updated_at: LocalDateTime
+    val created_at: String,
+    val updated_at: String
 )
