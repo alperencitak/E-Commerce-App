@@ -8,5 +8,5 @@ data class Order(
     val user_id: Int,
     val total_amount: BigDecimal,
     val status: String = "PENDING",
-    val order_date: LocalDateTime
+    val order_date: String
 )
