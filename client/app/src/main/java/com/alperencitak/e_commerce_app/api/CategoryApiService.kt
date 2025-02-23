@@ -11,7 +11,10 @@ import retrofit2.http.Path
 interface CategoryApiService {
 
     @GET("category/")
-    suspend fun getAll(): List<Category>
+    suspend fun getAllParent(): List<Category>
+
+    @GET("category/subcategory/{parent_id}")
+    suspend fun getChildByParentId(@Path("parent_id") parent_id: Int): List<Category>
 
     @GET("category/{id}")
     suspend fun getById(@Path("id") id: Int): Category
