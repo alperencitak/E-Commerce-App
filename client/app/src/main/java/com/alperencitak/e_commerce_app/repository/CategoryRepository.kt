@@ -10,8 +10,12 @@ class CategoryRepository @Inject constructor(
     private val context: Context
 ) {
 
-    suspend fun fetchAll(): List<Category>{
-        return api.getAll()
+    suspend fun fetchAllParent(): List<Category>{
+        return api.getAllParent()
+    }
+
+    suspend fun fetchChildByParentId(parent_id: Int): List<Category>{
+        return api.getChildByParentId(parent_id)
     }
 
     suspend fun fetchById(id: Int): Category{
