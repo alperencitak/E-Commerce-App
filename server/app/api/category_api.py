@@ -9,10 +9,17 @@ category_bp = Blueprint("categories", "categories", url_prefix="/category", desc
 
 
 @category_bp.route("/")
-class CategoriesResponse(MethodView):
+class ParentCategoriesResponse(MethodView):
     @category_bp.response(HTTPStatus.OK, CategorySchema(many=True))
     def get(self):
-        return CategoryService.get_all()
+        return CategoryService.get_all_parent()
+
+
+@category_bp.route("/subcategory/<int:parent_id>")
+class ChildCategoriesResponse(MethodView):
+    @category_bp.response(HTTPStatus.OK, CategorySchema(many=True))
+    def get(self, parent_id):
+        return CategoryService.get_child_by_parent_id(parent_id)
 
 
 @category_bp.route("/<int:category_id>")
