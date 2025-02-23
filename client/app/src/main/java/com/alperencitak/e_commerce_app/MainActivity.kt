@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 fun ScaffoldWithNavBar() {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-    val barRoutes = listOf("main", "search")
+    val barRoutes = listOf("main", "categories")
     Scaffold(
         bottomBar = {
             if (barRoutes.contains(currentRoute)) {
@@ -58,17 +58,17 @@ fun ScaffoldWithNavBar() {
                     modifier = Modifier
                         .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
                 ) {
-                    val itemColor = LightBlue
+                    val itemColor = SoftBeige
                     NavigationBarItem(
                         selected = currentRoute == "main",
-                        onClick = {},
+                        onClick = { navController.navigate("main") },
                         icon = {
                             Icon(
                                 painter = painterResource(R.drawable.home),
                                 contentDescription = "Home Icon"
                             )
                         },
-                        label = { Text(text = "Home", color = LightBlue) },
+                        label = { Text(text = "Home", color = itemColor) },
                         colors = NavigationBarItemDefaults.colors(
                             indicatorColor = itemColor,
                             selectedIconColor = Color.White,
@@ -77,14 +77,14 @@ fun ScaffoldWithNavBar() {
                     )
                     NavigationBarItem(
                         selected = currentRoute == "categories",
-                        onClick = {},
+                        onClick = { navController.navigate("categories") },
                         icon = {
                             Icon(
                                 painter = painterResource(R.drawable.categories),
                                 contentDescription = "Categories Icon"
                             )
                         },
-                        label = { Text(text = "Categories", color = LightBlue) },
+                        label = { Text(text = "Categories", color = itemColor) },
                         colors = NavigationBarItemDefaults.colors(
                             indicatorColor = itemColor,
                             selectedIconColor = Color.White,
@@ -101,7 +101,7 @@ fun ScaffoldWithNavBar() {
                                 contentDescription = "Favorite Icon"
                             )
                         },
-                        label = { Text(text = "Favorites", color = LightBlue) },
+                        label = { Text(text = "Favorites", color = itemColor) },
                         colors = NavigationBarItemDefaults.colors(
                             indicatorColor = itemColor,
                             selectedIconColor = Color.White,
@@ -118,7 +118,7 @@ fun ScaffoldWithNavBar() {
                                 contentDescription = "Cart Icon"
                             )
                         },
-                        label = { Text(text = "  Cart", color = LightBlue) },
+                        label = { Text(text = "  Cart", color = itemColor) },
                         colors = NavigationBarItemDefaults.colors(
                             indicatorColor = itemColor,
                             selectedIconColor = Color.White,
@@ -135,7 +135,7 @@ fun ScaffoldWithNavBar() {
                                 contentDescription = "Account Icon"
                             )
                         },
-                        label = { Text(text = "Account", color = LightBlue) },
+                        label = { Text(text = "Account", color = itemColor) },
                         colors = NavigationBarItemDefaults.colors(
                             indicatorColor = itemColor,
                             selectedIconColor = Color.White,

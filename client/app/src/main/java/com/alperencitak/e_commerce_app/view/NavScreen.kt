@@ -22,5 +22,8 @@ fun NavScreen(navController: NavHostController, paddingValues: PaddingValues) {
         composable("login"){
             LoginPage(navController)
         }
+        composable("categories"){
+            CategoriesPage(navController)
+        }
     }
 }
