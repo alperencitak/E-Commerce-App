@@ -24,11 +24,24 @@ class CategoryViewModel @Inject constructor(
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
-    fun fetchAll(){
+    fun fetchAllParent(){
         viewModelScope.launch {
             try {
                 _loading.value = true
-                _categoryList.value = categoryRepository.fetchAll()
+                _categoryList.value = categoryRepository.fetchAllParent()
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun fetchChildByParentId(parent_id: Int){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                _categoryList.value = categoryRepository.fetchChildByParentId(parent_id)
             }catch (e: Exception){
                 e.printStackTrace()
             }finally {
