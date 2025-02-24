@@ -128,7 +128,7 @@ fun ScaffoldWithNavBar() {
                     )
                     NavigationBarItem(
                         selected = currentRoute == "account",
-                        onClick = {},
+                        onClick = { navController.navigate("account") },
                         icon = {
                             Icon(
                                 painter = painterResource(R.drawable.account),
