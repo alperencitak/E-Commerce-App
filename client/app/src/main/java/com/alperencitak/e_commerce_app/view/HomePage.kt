@@ -18,11 +18,17 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,6 +49,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.alperencitak.e_commerce_app.R
+import com.alperencitak.e_commerce_app.ui.theme.Gray
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
 import com.alperencitak.e_commerce_app.ui.theme.LightGray
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
@@ -62,37 +69,43 @@ fun HomePage(navHostController: NavHostController) {
     )
     productViewModel.fetchByCategoryId(2)
     userViewModel.fetchUserById(101)
-
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(LightCream)
+            .verticalScroll(scrollState)
     ) {
-        Box(
+        Text(
+            text = "E-Commerce App",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = font,
+            modifier = Modifier.padding(top = 64.dp, bottom = 32.dp, start = 32.dp)
+        )
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(LightGray, SoftBeige)
-                    )
-                )
+                .background(Color.Gray)
+                .padding(horizontal = 16.dp, vertical = 24.dp),
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(
-                    top = 64.dp,
-                    bottom = 64.dp,
-                    start = 32.dp,
-                    end = 32.dp
-                ),
-                verticalArrangement = Arrangement.Center
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "HOME", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = "Location Icon",
+                    modifier = Modifier.padding(start = 8.dp)
+                )
                 Text(
-                    text = "\nLorem Ipsum is simply dummy text of the printing " +
-                            "and typesetting industry. Lorem Ipsum has been the " +
-                            "industry's standard dummy text ever since the 1500s, when an",
-                    fontSize = 16.sp,
-                    fontFamily = font
+                    text = "Test/Türkiye, Test mahallesi Test sokak No:1 Daire:1",
+                    fontSize = 14.sp,
+                    fontFamily = font,
+                    minLines = 1,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
                 )
             }
         }
@@ -117,7 +130,9 @@ fun HomePage(navHostController: NavHostController) {
                                 painter = rememberAsyncImagePainter("http://10.0.2.2:5000/image${product.image_url}"),
                                 contentScale = ContentScale.Crop,
                                 contentDescription = "Product Image",
-                                modifier = Modifier.fillMaxWidth().aspectRatio(1f)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(1f)
                             )
                             Text(
                                 text = product.name,
@@ -147,6 +162,42 @@ fun HomePage(navHostController: NavHostController) {
                 }
             }
         }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(LightGray, SoftBeige)
+                    )
+                )
+        ) {
+            Column(
+                modifier = Modifier.padding(
+                    top = 64.dp,
+                    bottom = 64.dp,
+                    start = 32.dp,
+                    end = 32.dp
+                ),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(text = "HOME", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = "\nLorem Ipsum is simply dummy text of the printing " +
+                            "and typesetting industry. Lorem Ipsum has been the " +
+                            "industry's standard dummy text ever since the 1500s, when an" +
+                            "and typesetting industry. Lorem Ipsum has been the " +
+                            "industry's standard dummy text ever since the 1500s, when an" +
+                            "and typesetting industry. Lorem Ipsum has been the " +
+                            "industry's standard dummy text ever since the 1500s, when an" +
+                            "and typesetting industry. Lorem Ipsum has been the " +
+                            "industry's standard dummy text ever since the 1500s, when an" +
+                            "and typesetting industry. Lorem Ipsum has been the " +
+                            "industry's standard dummy text ever since the 1500s, when an",
+                    fontSize = 16.sp,
+                    fontFamily = font
+                )
+            }
+        }
     }
 }
 
@@ -157,15 +208,14 @@ fun ScrollableCard() {
 
     Card(
         modifier = Modifier
-            .padding(16.dp)
             .fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        shape = CutCornerShape(0.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Box {
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.height(200.dp)
+                modifier = Modifier.fillMaxWidth().aspectRatio(16f/9f)
             ) { page ->
                 Image(
                     painter = painterResource(R.drawable.test),
