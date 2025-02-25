@@ -32,6 +32,16 @@ class ProductFilterBySalesAmountResponse(MethodView):
         return ProductService.filter_by_sales_amount()
 
 
+@product_bp.route("/search")
+class SearchResponse(MethodView):
+    @product_bp.response(HTTPStatus.OK, PaginationSchema)
+    def get(self):
+        key = request.args.get("key")
+        page = request.args.get("page", default=1, type=int)
+        per_page = request.args.get("per_page", default=10, type=int)
+        return ProductService.search(key, page, per_page)
+
+
 @product_bp.route("/add")
 class AddProductResponse(MethodView):
     @product_bp.response(HTTPStatus.CREATED, ProductSchema)
