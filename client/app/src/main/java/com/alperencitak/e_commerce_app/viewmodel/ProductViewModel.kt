@@ -19,8 +19,11 @@ class ProductViewModel @Inject constructor(
     private val _product = MutableStateFlow<Product?>(null)
     val product: StateFlow<Product?> = _product
 
-    private val _productList = MutableStateFlow<ProductResponse?>(null)
-    val productList: StateFlow<ProductResponse?> = _productList
+    private val _productResponse = MutableStateFlow<ProductResponse?>(null)
+    val productResponse: StateFlow<ProductResponse?> = _productResponse
+
+    private val _productList = MutableStateFlow<List<Product>>(emptyList())
+    val productList: StateFlow<List<Product>> = _productList
 
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
@@ -42,7 +45,7 @@ class ProductViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _loading.value = true
-                _productList.value = productRepository.fetchByCategoryId(category_id, page, perPage)
+                _productResponse.value = productRepository.fetchByCategoryId(category_id, page, perPage)
             }catch (e: Exception){
                 e.printStackTrace()
             }finally {
@@ -50,6 +53,20 @@ class ProductViewModel @Inject constructor(
             }
         }
     }
+
+    fun fetchBestSellers(){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                _productList.value = productRepository.fetchBestSellers()
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
     fun add(product: Product){
         viewModelScope.launch {
             try {
