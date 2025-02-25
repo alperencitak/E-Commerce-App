@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 fun ScaffoldWithNavBar() {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-    val barRoutes = listOf("main", "categories")
+    val barRoutes = listOf("main", "categories", "account")
     Scaffold(
         bottomBar = {
             if (barRoutes.contains(currentRoute)) {
