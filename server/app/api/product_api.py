@@ -25,6 +25,13 @@ class ProductWithCategoryResponse(MethodView):
         return ProductService.get_by_category_id(category_id, page, per_page)
 
 
+@product_bp.route("/bestsellers")
+class ProductFilterBySalesAmountResponse(MethodView):
+    @product_bp.response(HTTPStatus.OK, ProductSchema(many=True))
+    def get(self):
+        return ProductService.filter_by_sales_amount()
+
+
 @product_bp.route("/add")
 class AddProductResponse(MethodView):
     @product_bp.response(HTTPStatus.CREATED, ProductSchema)
