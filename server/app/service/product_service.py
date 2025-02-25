@@ -36,6 +36,18 @@ class ProductService:
         return cls.products_schema.dump(result)
 
     @classmethod
+    def search(cls, key, page=1, per_page=10):
+        query = db.select(Product).where(Product.name.like(f"%{key}%"))
+        products = db.paginate(query, page=page, per_page=per_page, error_out=False)
+        return {
+            "products": cls.products_schema.dump(products.items),
+            "total": products.total,
+            "pages": products.pages,
+            "current_page": products.page,
+            "per_page": products.per_page
+        }
+
+    @classmethod
     def add(cls, data, file=None):
         image_url = None
         if file:
