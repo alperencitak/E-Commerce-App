@@ -22,6 +22,9 @@ interface ProductApiService {
         @Query("per_page") per_page: Int = 10
     ): ProductResponse
 
+    @GET("product/bestsellers")
+    suspend fun getBestSellers(): List<Product>
+
     @POST("product/add")
     suspend fun add(@Body product: Product): Product
 
