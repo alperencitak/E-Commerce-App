@@ -30,6 +30,12 @@ class ProductService:
         }
 
     @classmethod
+    def filter_by_sales_amount(cls):
+        query = db.select(Product).order_by(db.desc(Product.sales_amount)).limit(10)
+        result = db.session.scalars(query).all()
+        return cls.products_schema.dump(result)
+
+    @classmethod
     def add(cls, data, file=None):
         image_url = None
         if file:
