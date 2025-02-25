@@ -19,6 +19,10 @@ class ProductRepository @Inject constructor(
         return api.getByCategoryId(categoryId, page, perPage)
     }
 
+    suspend fun fetchBestSellers(): List<Product>{
+        return api.getBestSellers()
+    }
+
     suspend fun add(product: Product): Product {
         return api.add(product)
     }
