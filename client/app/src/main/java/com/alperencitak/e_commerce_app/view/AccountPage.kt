@@ -2,6 +2,7 @@ package com.alperencitak.e_commerce_app.view
 
 import android.graphics.drawable.Icon
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -79,7 +80,7 @@ fun AccountPage(navHostController: NavHostController) {
 
             }
             ButtonRow(icon = Icons.Default.LocationOn, text = "My Address"){
-
+                navHostController.navigate("address")
             }
             ButtonRow(icon = Icons.Default.Star, text = "Premium"){
 
@@ -130,7 +131,9 @@ fun ButtonRow(icon: ImageVector, text: String,onClick: () -> Unit){
         )
     )
     Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 64.dp)
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 64.dp).clickable {
+            onClick()
+        }
     ) {
         HorizontalDivider(
             thickness = 2.dp,

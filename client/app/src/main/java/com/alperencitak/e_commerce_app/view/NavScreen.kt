@@ -28,5 +28,8 @@ fun NavScreen(navController: NavHostController, paddingValues: PaddingValues) {
         composable("account"){
             AccountPage(navController)
         }
+        composable("address"){
+            AddressPage(navController)
+        }
     }
 }
