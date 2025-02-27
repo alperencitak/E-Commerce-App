@@ -24,3 +24,18 @@ class UserResource(MethodView):
             return UserService.get_by_id(user_id)
         except NotFound as e:
             abort(404, str(e))
+
+
+@user_bp.route("/delete/<int:user_id>")
+class UserDeleteResource(MethodView):
+    @user_bp.response(HTTPStatus.NO_CONTENT, UserSchema)
+    def delete(self, user_id):
+        return UserService.delete_by_id(user_id)
+
+
+@user_bp.route("/update")
+class UserUpdateResource(MethodView):
+    @user_bp.response(HTTPStatus.OK, UserSchema)
+    @user_bp.arguments(UserSchema)
+    def put(self, data):
+        return UserService.update(data)
