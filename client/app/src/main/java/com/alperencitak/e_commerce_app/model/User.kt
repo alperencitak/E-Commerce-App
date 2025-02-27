@@ -7,4 +7,5 @@ data class User (
     val email: String,
     val phone: String,
     val created_at: String,
+    val current_address_id: Int
 )
