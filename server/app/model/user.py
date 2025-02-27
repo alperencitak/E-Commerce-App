@@ -11,6 +11,7 @@ class User(db.Model):
     email = db.Column("email", db.String(150), nullable=False)
     phone = db.Column("phone", db.String(15), nullable=True)
     password_hash = db.Column("password_hash", db.String(255), nullable=False)
+    current_address_id = db.Column("current_address_id", db.Integer, nullable=True)
     created_at = db.Column("created_at", db.DateTime, default=db.func.now())
 
 
