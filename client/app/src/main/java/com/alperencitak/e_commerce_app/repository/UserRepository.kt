@@ -18,4 +18,12 @@ class UserRepository @Inject constructor(
         return api.getAllUser()
     }
 
+    suspend fun deleteById(id: Int){
+        return api.deleteById(id)
+    }
+
+    suspend fun update(user: User): User{
+        return api.update(user)
+    }
+
 }
