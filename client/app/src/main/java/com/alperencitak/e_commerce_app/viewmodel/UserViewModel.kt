@@ -34,4 +34,30 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun deleteById(id: Int){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                userRepository.deleteById(id)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun update(user: User){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                _user.value = userRepository.update(user)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
 }
