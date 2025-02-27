@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,22 +38,27 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.alperencitak.e_commerce_app.R
+import com.alperencitak.e_commerce_app.ui.theme.DarkGreen
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
 import com.alperencitak.e_commerce_app.ui.theme.LightGray
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
 import com.alperencitak.e_commerce_app.viewmodel.AddressViewModel
+import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
 
 
 @Composable
 fun AddressPage(navHostController: NavHostController) {
     val addressViewModel: AddressViewModel = hiltViewModel()
+    val userViewModel: UserViewModel = hiltViewModel()
     val address = addressViewModel.address.collectAsState()
+    val user = userViewModel.user.collectAsState()
     val addressList = addressViewModel.addressList.collectAsState()
     val loading = addressViewModel.loading.collectAsState()
     val font = FontFamily(
         Font(R.font.montserrat_bold)
     )
+    userViewModel.fetchUserById(101)
     addressViewModel.fetchByUserId(101)
 
     Column(
@@ -95,21 +101,45 @@ fun AddressPage(navHostController: NavHostController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .clickable {  },
+                        .clickable {
+                            user.value?.let {
+                                val updatedUser = it.copy(current_address_id = address.address_id)
+                                userViewModel.update(updatedUser)
+                            }
+                        },
                     shape = RoundedCornerShape(8.dp),
                     border = BorderStroke(1.dp, Color.Gray),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     )
                 ) {
+                    user.value?.let {
+                        if(it.current_address_id == address.address_id){
+                            Row(
+                                modifier = Modifier.padding(top = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Place,
+                                    contentDescription = "",
+                                    tint = DarkGreen,
+                                    modifier = Modifier.padding(horizontal = 6.dp).size(25.dp)
+                                )
+                                Text(
+                                    text = "Current",
+                                    fontFamily = font,
+                                    fontSize = 15.sp,
+                                    color = DarkGreen
+                                )
+                            }
+                        }
+                    }
                     Text(
                         text = address.address_line1,
                         fontFamily = font,
                         fontSize = 17.sp,
                         color = Color.Black,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
+                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                         textAlign = TextAlign.Center
                     )
                     Text(
