@@ -25,11 +25,19 @@ fun NavScreen(navController: NavHostController, paddingValues: PaddingValues) {
         composable("categories"){
             CategoriesPage(navController)
         }
+        composable("child_categories/{category_id}"){ backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getString("category_id")?.toIntOrNull() ?: 0
+            ChildCategoriesPage(navController, categoryId)
+        }
         composable("account"){
             AccountPage(navController)
         }
         composable("address"){
             AddressPage(navController)
+        }
+        composable("products_by_category/{category_id}"){ backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getString("category_id")?.toIntOrNull() ?: 0
+            ProductsByCategoryPage(navController, categoryId)
         }
     }
 }
