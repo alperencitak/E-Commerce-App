@@ -28,6 +28,19 @@ class ProductViewModel @Inject constructor(
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
+    fun updateProductList(list: List<Product>){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                _productList.value += list
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
     fun fetchById(id: Int){
         viewModelScope.launch {
             try {
