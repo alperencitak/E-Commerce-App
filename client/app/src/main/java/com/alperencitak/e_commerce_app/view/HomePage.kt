@@ -2,6 +2,7 @@ package com.alperencitak.e_commerce_app.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -118,7 +119,8 @@ fun HomePage(navHostController: NavHostController) {
                 ElevatedCard(
                     modifier = Modifier
                         .width(200.dp)
-                        .padding(horizontal = 8.dp),
+                        .padding(horizontal = 8.dp)
+                        .clickable {  },
                     shape = RoundedCornerShape(8.dp),
                     elevation = CardDefaults.cardElevation(8.dp)
                 ) {
