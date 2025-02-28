@@ -37,11 +37,11 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    fun fetchChildByParentId(parent_id: Int){
+    fun fetchChildByParentId(parentId: Int){
         viewModelScope.launch {
             try {
                 _loading.value = true
-                _categoryList.value = categoryRepository.fetchChildByParentId(parent_id)
+                _categoryList.value = categoryRepository.fetchChildByParentId(parentId)
             }catch (e: Exception){
                 e.printStackTrace()
             }finally {
