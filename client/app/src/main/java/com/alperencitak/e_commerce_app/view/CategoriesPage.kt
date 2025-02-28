@@ -2,6 +2,7 @@ package com.alperencitak.e_commerce_app.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,10 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,7 +56,9 @@ fun CategoriesPage(navHostController: NavHostController) {
         )
     )
     Column(
-        modifier = Modifier.fillMaxSize().background(LightCream)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(LightCream)
     ) {
         Text(
             text = "CATEGORIES",
@@ -75,7 +82,10 @@ fun CategoriesPage(navHostController: NavHostController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
-                        .padding(12.dp),
+                        .padding(12.dp)
+                        .clickable {
+                            navHostController.navigate("child_categories/${category.category_id}")
+                        },
                     shape = RoundedCornerShape(8.dp),
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
