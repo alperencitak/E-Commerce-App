@@ -24,7 +24,13 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -39,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.alperencitak.e_commerce_app.R
+import com.alperencitak.e_commerce_app.model.Product
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
 import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 
@@ -46,15 +53,26 @@ import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 @Composable
 fun ProductsByCategoryPage(navHostController: NavHostController, categoryId: Int) {
     val productViewModel: ProductViewModel = hiltViewModel()
-    val productList = productViewModel.productResponse.collectAsState()
+    val productResponse = productViewModel.productResponse.collectAsState()
+    val productList = productViewModel.productList.collectAsState()
     val font = FontFamily(
         Font(R.font.montserrat_bold)
     )
-    productViewModel.fetchByCategoryId(categoryId)
-    println(categoryId)
+    var page by remember { mutableIntStateOf(1) }
+    var isLoadingMore by remember { mutableStateOf(false) }
 
-    if (productList.value != null){
-        val products = productList.value!!.products
+    LaunchedEffect(page) {
+        if(!isLoadingMore){
+            isLoadingMore=true
+            productViewModel.fetchByCategoryId(category_id=categoryId, page=page)
+            productResponse.value?.let {
+                productViewModel.updateProductList(it.products)
+            }
+            isLoadingMore=false
+        }
+    }
+
+    if (productResponse.value != null){
         Column(
             modifier = Modifier.padding(top = 64.dp, start = 8.dp, end = 8.dp),
         ) {
@@ -69,7 +87,7 @@ fun ProductsByCategoryPage(navHostController: NavHostController, categoryId: Int
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
             ) {
-                items(products){ product ->
+                items(productList.value){ product ->
                     ElevatedCard(
                         modifier = Modifier
                             .width(200.dp)
@@ -109,6 +127,13 @@ fun ProductsByCategoryPage(navHostController: NavHostController, categoryId: Int
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
                         )
+                    }
+                }
+                item {
+                    if(!isLoadingMore){
+                        LaunchedEffect(Unit) {
+                            page++
+                        }
                     }
                 }
             }
