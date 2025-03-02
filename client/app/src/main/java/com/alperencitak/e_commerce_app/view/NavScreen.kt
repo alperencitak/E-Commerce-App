@@ -13,7 +13,7 @@ import androidx.navigation.compose.composable
 fun NavScreen(navController: NavHostController, paddingValues: PaddingValues) {
     NavHost(
         navController = navController,
-        startDestination = "main",
+        startDestination = "login",
         modifier = Modifier.fillMaxSize()
     ){
         composable("main"){
