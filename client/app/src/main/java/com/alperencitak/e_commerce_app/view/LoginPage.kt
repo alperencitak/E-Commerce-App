@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.alperencitak.e_commerce_app.R
+import com.alperencitak.e_commerce_app.handler.Result
 import com.alperencitak.e_commerce_app.model.LoginRequest
 import com.alperencitak.e_commerce_app.model.RegisterRequest
 import com.alperencitak.e_commerce_app.ui.theme.Blue
@@ -64,21 +65,11 @@ fun LoginPage(navHostController: NavHostController) {
     val authViewModel: AuthViewModel = hiltViewModel()
     val loginResponse = authViewModel.loginResponse.collectAsState()
     val registerResponse = authViewModel.registerResponse.collectAsState()
-    val currentUserId = authViewModel.currentUserId.collectAsState()
-    val loading = authViewModel.loading.collectAsState()
     val font = FontFamily(
         Font(
             R.font.inter_regular
         )
     )
-    authViewModel.getCurrentUserId()
-    LaunchedEffect(currentUserId.value) {
-        currentUserId.value?.let {
-            if(it.toInt() != 0){
-                navHostController.navigate("main")
-            }
-        }
-    }
 
     var page by remember { mutableIntStateOf(1) }
     var step by remember { mutableIntStateOf(1) }
@@ -87,6 +78,21 @@ fun LoginPage(navHostController: NavHostController) {
     var password by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var surname by remember { mutableStateOf("") }
+
+    LaunchedEffect(loginResponse.value) {
+        when (loginResponse.value) {
+            is Result.Success -> {
+                navHostController.navigate("main")
+            }
+            is Result.Error -> {
+                println("Error")
+            }
+            is Result.Loading -> {
+                println("Loading...")
+            }
+            else -> {}
+        }
+    }
 
     Image(
         modifier = Modifier.fillMaxSize(),
@@ -119,7 +125,6 @@ fun LoginPage(navHostController: NavHostController) {
                             password = localPassword
                         )
                         authViewModel.login(loginRequest)
-                        authViewModel.getCurrentUserId()
                     }
                 }else{
                     StepIndicator(step)
