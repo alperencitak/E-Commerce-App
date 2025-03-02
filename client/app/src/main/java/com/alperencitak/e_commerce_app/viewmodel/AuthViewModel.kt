@@ -11,14 +11,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.alperencitak.e_commerce_app.handler.Result
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ): ViewModel() {
 
-    private val _loginResponse = MutableStateFlow<User?>(null)
-    val loginResponse: StateFlow<User?> = _loginResponse
+    private val _loginResponse = MutableStateFlow<Result<User>?>(null)
+    val loginResponse: StateFlow<Result<User>?> = _loginResponse
 
     private val _registerResponse = MutableStateFlow<User?>(null)
     val registerResponse: StateFlow<User?> = _registerResponse
@@ -31,15 +32,13 @@ class AuthViewModel @Inject constructor(
 
     fun login(loginRequest: LoginRequest){
         viewModelScope.launch {
+            _loginResponse.value = Result.Loading
             try {
-                _loading.value = true
                 val user = authRepository.login(loginRequest)
-                _loginResponse.value = user
+                _loginResponse.value = Result.Success(user)
                 _currentUserId.value = user.user_id.toString()
             }catch (e: Exception){
-                e.printStackTrace()
-            }finally {
-                _loading.value = false
+                _loginResponse.value = Result.Error("Login failed: ${e.localizedMessage}")
             }
         }
     }
