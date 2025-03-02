@@ -60,6 +60,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.coil.compose)
+    implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.foundation)
     implementation(libs.material3)
