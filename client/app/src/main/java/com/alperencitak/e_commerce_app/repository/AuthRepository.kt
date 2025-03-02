@@ -9,15 +9,28 @@ import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
     private val api: AuthApiService,
-    private val context: Context
+    private val context: Context,
+    private val dataStoreManager: DataStoreManager
 ) {
 
     suspend fun login(loginRequest: LoginRequest): User{
-        return api.login(loginRequest)
+        val user = api.login(loginRequest)
+        dataStoreManager.saveUserId(user.user_id.toString())
+        return user
     }
 
     suspend fun register(registerRequest: RegisterRequest): User{
-        return api.register(registerRequest)
+        val user = api.register(registerRequest)
+        dataStoreManager.saveUserId(user.user_id.toString())
+        return user
+    }
+
+    suspend fun logout(){
+        dataStoreManager.clearUserId()
+    }
+
+    suspend fun getCurrentUserId(): String?{
+        return dataStoreManager.getUserId()
     }
 
 }
