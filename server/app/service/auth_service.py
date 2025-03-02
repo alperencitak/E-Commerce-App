@@ -12,8 +12,9 @@ class AuthService:
     def login(cls, data):
         user = db.session.scalars(db.select(User).where(User.email == data['email'])).first()
         if argon2.verify(data['password'], user.password_hash):
+            print(f"user id -> {user.user_id}")
             return cls.user_schema.dump(user)
-        return {"error": "Invalid email or password"}
+        return NotFound("Invalid email or password")
 
     @classmethod
     def register(cls, data):
