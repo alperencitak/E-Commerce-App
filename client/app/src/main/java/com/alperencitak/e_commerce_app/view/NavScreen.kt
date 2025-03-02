@@ -13,7 +13,7 @@ import androidx.navigation.compose.composable
 fun NavScreen(navController: NavHostController, paddingValues: PaddingValues) {
     NavHost(
         navController = navController,
-        startDestination = "login",
+        startDestination = "splash",
         modifier = Modifier.fillMaxSize()
     ){
         composable("main"){
@@ -38,6 +38,9 @@ fun NavScreen(navController: NavHostController, paddingValues: PaddingValues) {
         composable("products_by_category/{category_id}"){ backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("category_id")?.toIntOrNull() ?: 0
             ProductsByCategoryPage(navController, categoryId)
+        }
+        composable("splash"){
+            SplashScreen(navController)
         }
     }
 }
