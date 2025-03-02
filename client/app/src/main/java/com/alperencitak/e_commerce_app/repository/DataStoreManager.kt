@@ -28,9 +28,9 @@ class DataStoreManager @Inject constructor(@ApplicationContext context: Context)
         }
     }
 
-    suspend fun getUserId(): String? {
+    suspend fun getUserId(): String {
         val preferences = dataStore.data.first()
-        return preferences[USER_ID]
+        return preferences[USER_ID] ?: "0"
     }
 
     suspend fun clearUserId() {
