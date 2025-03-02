@@ -23,6 +23,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -63,12 +64,21 @@ fun LoginPage(navHostController: NavHostController) {
     val authViewModel: AuthViewModel = hiltViewModel()
     val loginResponse = authViewModel.loginResponse.collectAsState()
     val registerResponse = authViewModel.registerResponse.collectAsState()
+    val currentUserId = authViewModel.currentUserId.collectAsState()
     val loading = authViewModel.loading.collectAsState()
     val font = FontFamily(
         Font(
             R.font.inter_regular
         )
     )
+    authViewModel.getCurrentUserId()
+    LaunchedEffect(currentUserId.value) {
+        currentUserId.value?.let {
+            if(it.toInt() != 0){
+                navHostController.navigate("main")
+            }
+        }
+    }
 
     var page by remember { mutableIntStateOf(1) }
     var step by remember { mutableIntStateOf(1) }
@@ -109,10 +119,7 @@ fun LoginPage(navHostController: NavHostController) {
                             password = localPassword
                         )
                         authViewModel.login(loginRequest)
-
-                        if(loginResponse.value != null){
-                            navHostController.navigate("main")
-                        }
+                        authViewModel.getCurrentUserId()
                     }
                 }else{
                     StepIndicator(step)
