@@ -16,7 +16,10 @@ class LoginResource(MethodView):
     @auth_bp.response(HTTPStatus.OK, UserSchema)
     @auth_bp.arguments(LoginSchema)
     def post(self, data):
-        return AuthService.login(data)
+        try:
+            return AuthService.login(data)
+        except NotFound:
+            return abort(HTTPStatus.UNAUTHORIZED, description="Invalid email or password")
 
 
 @auth_bp.route("/register")

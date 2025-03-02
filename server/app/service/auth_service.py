@@ -14,7 +14,7 @@ class AuthService:
         if argon2.verify(data['password'], user.password_hash):
             print(f"user id -> {user.user_id}")
             return cls.user_schema.dump(user)
-        return NotFound("Invalid email or password")
+        raise NotFound("Invalid email or password")
 
     @classmethod
     def register(cls, data):
