@@ -42,12 +42,14 @@ import androidx.navigation.NavHostController
 import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
+import com.alperencitak.e_commerce_app.viewmodel.AuthViewModel
 import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
 
 
 @Composable
 fun AccountPage(navHostController: NavHostController) {
     val userViewModel: UserViewModel = hiltViewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
     val user = userViewModel.user.collectAsState()
     val loading = userViewModel.loading.collectAsState()
     val font = FontFamily(
@@ -96,7 +98,10 @@ fun AccountPage(navHostController: NavHostController) {
             }
             OutlinedButton(
                 onClick = {
-
+                    authViewModel.logout()
+                    navHostController.navigate("login"){
+                        popUpTo(0) { inclusive = true }
+                    }
                 },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 64.dp, vertical = 12.dp),
                 shape = RoundedCornerShape(12.dp)
