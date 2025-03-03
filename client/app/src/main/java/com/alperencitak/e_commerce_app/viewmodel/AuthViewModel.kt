@@ -21,8 +21,8 @@ class AuthViewModel @Inject constructor(
     private val _loginResponse = MutableStateFlow<Result<User>?>(null)
     val loginResponse: StateFlow<Result<User>?> = _loginResponse
 
-    private val _registerResponse = MutableStateFlow<User?>(null)
-    val registerResponse: StateFlow<User?> = _registerResponse
+    private val _registerResponse = MutableStateFlow<Result<User>?>(null)
+    val registerResponse: StateFlow<Result<User>?> = _registerResponse
 
     private val _currentUserId = MutableStateFlow<String?>(null)
     val currentUserId: StateFlow<String?> = _currentUserId
@@ -45,13 +45,13 @@ class AuthViewModel @Inject constructor(
 
     fun register(registerRequest: RegisterRequest){
         viewModelScope.launch {
+            _registerResponse.value = Result.Loading
             try {
-                _loading.value = true
-                _registerResponse.value = authRepository.register(registerRequest)
+                val user = authRepository.register(registerRequest)
+                _registerResponse.value = Result.Success(user)
+                _currentUserId.value = user.user_id.toString()
             }catch (e: Exception){
-                e.printStackTrace()
-            }finally {
-                _loading.value = false
+                _registerResponse.value = Result.Error("Register failed: ${e.localizedMessage}")
             }
         }
     }
@@ -59,12 +59,11 @@ class AuthViewModel @Inject constructor(
     fun logout(){
         viewModelScope.launch {
             try {
-                _loading.value = true
+                _registerResponse.value = null
+                _loginResponse.value = null
                 authRepository.logout()
             }catch (e: Exception){
                 e.printStackTrace()
-            }finally {
-                _loading.value = false
             }
         }
     }
