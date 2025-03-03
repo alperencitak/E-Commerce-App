@@ -94,6 +94,21 @@ fun LoginPage(navHostController: NavHostController) {
         }
     }
 
+    LaunchedEffect(registerResponse.value) {
+        when (registerResponse.value) {
+            is Result.Success -> {
+                navHostController.navigate("main")
+            }
+            is Result.Error -> {
+                println("Error")
+            }
+            is Result.Loading -> {
+                println("Loading...")
+            }
+            else -> {}
+        }
+    }
+
     Image(
         modifier = Modifier.fillMaxSize(),
         painter = painterResource(R.drawable.login_page_wp),
@@ -155,10 +170,6 @@ fun LoginPage(navHostController: NavHostController) {
                                     password = password
                                 )
                                 authViewModel.register(registerRequest)
-
-                                if(registerResponse.value != null){
-                                    navHostController.navigate("main")
-                                }
                             }else{
                                 step--
                             }
@@ -227,7 +238,7 @@ fun StepSignIn(onLogin: (String, String) -> Unit) {
                 }
             },
             label = { Text("Password", fontFamily = font) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            visualTransformation = PasswordVisualTransformation(),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
