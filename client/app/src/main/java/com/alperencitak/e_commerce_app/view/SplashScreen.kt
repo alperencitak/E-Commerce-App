@@ -21,7 +21,6 @@ fun SplashScreen(navHostController: NavHostController) {
     LaunchedEffect(Unit) {
         authViewModel.getCurrentUserId()
     }
-
     LaunchedEffect(currentUserId.value) {
         currentUserId.value?.let {
             if (it.toInt() != 0) {
