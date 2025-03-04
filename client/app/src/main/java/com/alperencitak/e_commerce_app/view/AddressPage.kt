@@ -8,20 +8,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,9 +41,8 @@ import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.ui.theme.DarkGreen
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
-import com.alperencitak.e_commerce_app.ui.theme.LightGray
-import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
 import com.alperencitak.e_commerce_app.viewmodel.AddressViewModel
+import com.alperencitak.e_commerce_app.viewmodel.AuthViewModel
 import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
 
 
@@ -51,15 +50,18 @@ import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
 fun AddressPage(navHostController: NavHostController) {
     val addressViewModel: AddressViewModel = hiltViewModel()
     val userViewModel: UserViewModel = hiltViewModel()
-    val address = addressViewModel.address.collectAsState()
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val currentUserId = authViewModel.currentUserId.collectAsState()
     val user = userViewModel.user.collectAsState()
     val addressList = addressViewModel.addressList.collectAsState()
-    val loading = addressViewModel.loading.collectAsState()
     val font = FontFamily(
         Font(R.font.montserrat_bold)
     )
-    userViewModel.fetchUserById(101)
-    addressViewModel.fetchByUserId(101)
+    authViewModel.getCurrentUserId()
+    currentUserId.value?.let {
+        userViewModel.fetchUserById(it.toInt())
+        addressViewModel.fetchByUserId(it.toInt())
+    }
 
     Column(
         modifier = Modifier
@@ -90,6 +92,24 @@ fun AddressPage(navHostController: NavHostController) {
                     .padding(vertical = 64.dp),
                 textAlign = TextAlign.Center
             )
+        }
+        OutlinedButton(
+            onClick = {
+                navHostController.navigate("add_address")
+            },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 24.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Icon"
+                )
+            }
         }
         LazyColumn(
             modifier = Modifier
