@@ -39,6 +39,9 @@ fun NavScreen(navController: NavHostController, paddingValues: PaddingValues) {
             val categoryId = backStackEntry.arguments?.getString("category_id")?.toIntOrNull() ?: 0
             ProductsByCategoryPage(navController, categoryId)
         }
+        composable("add_address"){
+            AddAddressPage(navController)
+        }
         composable("splash"){
             SplashScreen(navController)
         }
