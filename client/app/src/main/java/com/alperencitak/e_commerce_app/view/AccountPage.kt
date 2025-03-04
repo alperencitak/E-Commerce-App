@@ -50,6 +50,7 @@ import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
 fun AccountPage(navHostController: NavHostController) {
     val userViewModel: UserViewModel = hiltViewModel()
     val authViewModel: AuthViewModel = hiltViewModel()
+    val currentUserId = authViewModel.currentUserId.collectAsState()
     val user = userViewModel.user.collectAsState()
     val loading = userViewModel.loading.collectAsState()
     val font = FontFamily(
@@ -57,7 +58,10 @@ fun AccountPage(navHostController: NavHostController) {
             R.font.montserrat_bold
         )
     )
-    userViewModel.fetchUserById(103)
+    authViewModel.getCurrentUserId()
+    currentUserId.value?.let {
+        userViewModel.fetchUserById(it.toInt())
+    }
     if(user.value != null){
         Column(
             modifier = Modifier.fillMaxSize().background(LightCream).padding(top = 64.dp),
