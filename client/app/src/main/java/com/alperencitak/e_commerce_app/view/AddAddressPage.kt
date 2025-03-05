@@ -23,10 +23,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,11 +47,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.alperencitak.e_commerce_app.R
+import com.alperencitak.e_commerce_app.model.Address
 import com.alperencitak.e_commerce_app.ui.theme.Blue
 import com.alperencitak.e_commerce_app.ui.theme.DarkGreen
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
+import com.alperencitak.e_commerce_app.ui.theme.Gray
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
+import com.alperencitak.e_commerce_app.ui.theme.WhiteModern
 import com.alperencitak.e_commerce_app.viewmodel.AddressViewModel
 import com.alperencitak.e_commerce_app.viewmodel.AuthViewModel
 import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
@@ -72,12 +79,12 @@ fun AddAddressPage(navHostController: NavHostController){
     var country by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
     var district by remember { mutableStateOf("") }
-    var line1 by remember { mutableStateOf("") }
+    var line1SelectedIndex by remember { mutableIntStateOf(0) }
+    val line1 = listOf("Home Address", "Work Address", "Other Address")
     var line2 by remember { mutableStateOf("") }
     var countryError by remember { mutableStateOf(false) }
     var cityError by remember { mutableStateOf(false) }
     var districtError by remember { mutableStateOf(false) }
-    var line1Error by remember { mutableStateOf(false) }
     var line2Error by remember { mutableStateOf(false) }
 
     Column(
@@ -87,7 +94,9 @@ fun AddAddressPage(navHostController: NavHostController){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
@@ -95,9 +104,11 @@ fun AddAddressPage(navHostController: NavHostController){
                 imageVector = Icons.Default.Close,
                 contentDescription = "Close Icon",
                 tint = DarkerSoftBeige,
-                modifier = Modifier.size(32.dp).clickable {
-                    navHostController.popBackStack()
-                }
+                modifier = Modifier
+                    .size(32.dp)
+                    .clickable {
+                        navHostController.popBackStack()
+                    }
             )
             Text(
                 text = "Add New Addresses",
@@ -129,7 +140,9 @@ fun AddAddressPage(navHostController: NavHostController){
                     focusedBorderColor = if (countryError) Color.Red else DarkerSoftBeige
                 ),
                 singleLine = true,
-                modifier = Modifier.weight(1f).padding(horizontal = 8.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp)
             )
             OutlinedTextField(
                 value = city,
@@ -146,11 +159,15 @@ fun AddAddressPage(navHostController: NavHostController){
                     focusedBorderColor = if (cityError) Color.Red else DarkerSoftBeige
                 ),
                 singleLine = true,
-                modifier = Modifier.weight(1f).padding(horizontal = 8.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp)
             )
         }
         Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 6.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             OutlinedTextField(
@@ -168,25 +185,33 @@ fun AddAddressPage(navHostController: NavHostController){
                     focusedBorderColor = if (districtError) Color.Red else DarkerSoftBeige
                 ),
                 singleLine = true,
-                modifier = Modifier.weight(1f).padding(horizontal = 8.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp)
             )
-            OutlinedTextField(
-                value = line1,
-                onValueChange = {
-                    if (it.length <= 100) {
-                        line1 = it
-                    }
-                },
-                label = { Text("Line 1", fontFamily = font) },
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedBorderColor = if (line1Error) Color.Red else DarkerSoftBeige,
-                    focusedBorderColor = if (line1Error) Color.Red else DarkerSoftBeige
-                ),
-                singleLine = true,
-                modifier = Modifier.weight(1f).padding(horizontal = 8.dp)
-            )
+        }
+        SingleChoiceSegmentedButtonRow(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+        ) {
+            line1.forEachIndexed { index, label ->
+                SegmentedButton(
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = index,
+                        count = line1.size
+                    ),
+                    onClick = { line1SelectedIndex = index },
+                    selected = index == line1SelectedIndex,
+                    label = { Text(label, fontFamily = font) },
+                    colors = SegmentedButtonDefaults.colors(
+                        inactiveContainerColor = SoftBeige,
+                        activeContainerColor = DarkerSoftBeige,
+                        inactiveContentColor = WhiteModern,
+                        activeContentColor = LightCream,
+                        inactiveBorderColor = DarkerSoftBeige,
+                        activeBorderColor = Color.Gray,
+                    )
+                )
+            }
         }
         OutlinedTextField(
             value = line2,
@@ -202,13 +227,31 @@ fun AddAddressPage(navHostController: NavHostController){
                 unfocusedBorderColor = if (line2Error) Color.Red else DarkerSoftBeige,
                 focusedBorderColor = if (line2Error) Color.Red else DarkerSoftBeige
             ),
-            modifier = Modifier.fillMaxWidth().height(160.dp).padding(horizontal = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+                .padding(horizontal = 8.dp)
         )
         Button(
             onClick = {
-
+                currentUserId.value?.let {
+                    val address = Address(
+                        user_id = it.toInt(),
+                        address_line1 = line1[line1SelectedIndex],
+                        address_line2 = line2,
+                        district = district,
+                        city = city,
+                        country = country
+                    )
+                    val addedAddress = addressViewModel.add(address)
+                    if(addedAddress != null){
+                        navHostController.popBackStack()
+                    }
+                }
             },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 24.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = DarkGreen
