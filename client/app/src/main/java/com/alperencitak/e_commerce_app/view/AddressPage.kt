@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -25,10 +26,14 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +46,7 @@ import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.ui.theme.DarkGreen
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
+import com.alperencitak.e_commerce_app.utils.Dialog
 import com.alperencitak.e_commerce_app.viewmodel.AddressViewModel
 import com.alperencitak.e_commerce_app.viewmodel.AuthViewModel
 import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
@@ -54,6 +60,7 @@ fun AddressPage(navHostController: NavHostController) {
     val currentUserId = authViewModel.currentUserId.collectAsState()
     val user = userViewModel.user.collectAsState()
     val addressList = addressViewModel.addressList.collectAsState()
+    val openAlertDialog = remember { mutableStateOf(false) }
     val font = FontFamily(
         Font(R.font.montserrat_bold)
     )
@@ -70,7 +77,9 @@ fun AddressPage(navHostController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
@@ -78,9 +87,11 @@ fun AddressPage(navHostController: NavHostController) {
                 imageVector = Icons.Default.Close,
                 contentDescription = "Close Icon",
                 tint = DarkerSoftBeige,
-                modifier = Modifier.size(32.dp).clickable {
-                    navHostController.popBackStack()
-                }
+                modifier = Modifier
+                    .size(32.dp)
+                    .clickable {
+                        navHostController.popBackStack()
+                    }
             )
             Text(
                 text = "My Addresses",
@@ -97,7 +108,9 @@ fun AddressPage(navHostController: NavHostController) {
             onClick = {
                 navHostController.navigate("add_address")
             },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 24.dp),
             shape = RoundedCornerShape(12.dp)
         ) {
             Row(
@@ -114,9 +127,25 @@ fun AddressPage(navHostController: NavHostController) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 200.dp, max = 400.dp)
         ) {
             items(addressList.value) { address ->
+                if (openAlertDialog.value) {
+                    Dialog(
+                        onDismissRequest = {
+                            openAlertDialog.value = false
+                        },
+                        onConfirmation = {
+                            openAlertDialog.value = false
+                            addressViewModel.deleteById(address.address_id)
+                            navHostController.navigate("address"){
+                                popUpTo("address") { inclusive = true }
+                            }
+                        },
+                        dialogTitle = "Delete Selected Address",
+                        dialogText = "Deletion cannot be undone. Are you sure?",
+                        icon = Icons.Filled.Delete
+                    )
+                }
                 OutlinedCard(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -134,24 +163,43 @@ fun AddressPage(navHostController: NavHostController) {
                     )
                 ) {
                     user.value?.let {
-                        if(it.current_address_id == address.address_id){
+                        Row(
+                            modifier = Modifier.padding(top = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
                             Row(
-                                modifier = Modifier.padding(top = 6.dp),
+                                modifier = Modifier.weight(1f),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Place,
-                                    contentDescription = "",
-                                    tint = DarkGreen,
-                                    modifier = Modifier.padding(horizontal = 6.dp).size(25.dp)
-                                )
-                                Text(
-                                    text = "Current",
-                                    fontFamily = font,
-                                    fontSize = 15.sp,
-                                    color = DarkGreen
-                                )
+                                if (it.current_address_id == address.address_id) {
+                                    Icon(
+                                        imageVector = Icons.Default.Place,
+                                        contentDescription = "",
+                                        tint = DarkGreen,
+                                        modifier = Modifier
+                                            .padding(horizontal = 6.dp)
+                                            .size(25.dp)
+                                    )
+                                    Text(
+                                        text = "Current",
+                                        fontFamily = font,
+                                        fontSize = 15.sp,
+                                        color = DarkGreen
+                                    )
+                                }
                             }
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "",
+                                tint = Color.Red,
+                                modifier = Modifier
+                                    .padding(horizontal = 6.dp)
+                                    .size(25.dp)
+                                    .clickable {
+                                        openAlertDialog.value = true
+                                    }
+                            )
                         }
                     }
                     Text(
@@ -159,7 +207,9 @@ fun AddressPage(navHostController: NavHostController) {
                         fontFamily = font,
                         fontSize = 17.sp,
                         color = Color.Black,
-                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp),
                         textAlign = TextAlign.Center
                     )
                     Text(
