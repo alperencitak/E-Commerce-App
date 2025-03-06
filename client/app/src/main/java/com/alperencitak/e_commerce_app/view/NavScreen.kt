@@ -15,34 +15,38 @@ fun NavScreen(navController: NavHostController, paddingValues: PaddingValues) {
         navController = navController,
         startDestination = "splash",
         modifier = Modifier.fillMaxSize()
-    ){
-        composable("main"){
+    ) {
+        composable("main") {
             HomePage(navController)
         }
-        composable("login"){
+        composable("login") {
             LoginPage(navController)
         }
-        composable("categories"){
+        composable("categories") {
             CategoriesPage(navController)
         }
-        composable("child_categories/{category_id}"){ backStackEntry ->
+        composable("child_categories/{category_id}") { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("category_id")?.toIntOrNull() ?: 0
             ChildCategoriesPage(navController, categoryId)
         }
-        composable("account"){
+        composable("account") {
             AccountPage(navController)
         }
-        composable("address"){
+        composable("address") {
             AddressPage(navController)
         }
-        composable("products_by_category/{category_id}"){ backStackEntry ->
+        composable("products_by_category/{category_id}") { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("category_id")?.toIntOrNull() ?: 0
             ProductsByCategoryPage(navController, categoryId)
         }
-        composable("add_address"){
+        composable("add_address") {
             AddAddressPage(navController)
         }
-        composable("splash"){
+        composable("product/{product_id}") { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("product_id")?.toIntOrNull() ?: 0
+            ProductPage(navController, productId)
+        }
+        composable("splash") {
             SplashScreen(navController)
         }
     }
