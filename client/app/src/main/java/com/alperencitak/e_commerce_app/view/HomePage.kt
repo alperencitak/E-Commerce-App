@@ -120,7 +120,9 @@ fun HomePage(navHostController: NavHostController) {
                     modifier = Modifier
                         .width(200.dp)
                         .padding(horizontal = 8.dp)
-                        .clickable {  },
+                        .clickable {
+                            navHostController.navigate("product/${product.product_id}")
+                        },
                     shape = RoundedCornerShape(8.dp),
                     elevation = CardDefaults.cardElevation(8.dp)
                 ) {

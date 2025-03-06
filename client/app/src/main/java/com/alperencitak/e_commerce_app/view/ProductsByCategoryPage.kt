@@ -1,6 +1,7 @@
 package com.alperencitak.e_commerce_app.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.model.Product
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
+import com.alperencitak.e_commerce_app.ui.theme.LightCream
 import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 
 
@@ -62,37 +64,44 @@ fun ProductsByCategoryPage(navHostController: NavHostController, categoryId: Int
     var isLoadingMore by remember { mutableStateOf(false) }
 
     LaunchedEffect(page) {
-        if(!isLoadingMore){
-            isLoadingMore=true
-            productViewModel.fetchByCategoryId(category_id=categoryId, page=page)
+        if (!isLoadingMore) {
+            isLoadingMore = true
+            productViewModel.fetchByCategoryId(category_id = categoryId, page = page)
             productResponse.value?.let {
                 productViewModel.updateProductList(it.products)
             }
-            isLoadingMore=false
+            isLoadingMore = false
         }
     }
 
-    if (productResponse.value != null){
+    if (productResponse.value != null) {
         Column(
-            modifier = Modifier.padding(top = 64.dp, start = 8.dp, end = 8.dp),
+            modifier = Modifier
+                .padding(top = 64.dp, start = 8.dp, end = 8.dp)
+                .background(LightCream),
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back Icon",
                 tint = DarkerSoftBeige,
-                modifier = Modifier.size(48.dp).padding(start = 6.dp, bottom = 8.dp).clickable {
-                    navHostController.popBackStack()
-                }
+                modifier = Modifier
+                    .size(48.dp)
+                    .padding(start = 6.dp, bottom = 8.dp)
+                    .clickable {
+                        navHostController.popBackStack()
+                    }
             )
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
             ) {
-                items(productList.value){ product ->
+                items(productList.value) { product ->
                     ElevatedCard(
                         modifier = Modifier
                             .width(200.dp)
                             .padding(8.dp)
-                            .clickable {  },
+                            .clickable {
+                                navHostController.navigate("product/${product.product_id}")
+                            },
                         shape = RoundedCornerShape(12.dp),
                         elevation = CardDefaults.cardElevation(6.dp)
                     ) {
@@ -130,7 +139,7 @@ fun ProductsByCategoryPage(navHostController: NavHostController, categoryId: Int
                     }
                 }
                 item {
-                    if(!isLoadingMore){
+                    if (!isLoadingMore) {
                         LaunchedEffect(Unit) {
                             page++
                         }
