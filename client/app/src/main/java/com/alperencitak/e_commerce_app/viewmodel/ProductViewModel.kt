@@ -25,6 +25,9 @@ class ProductViewModel @Inject constructor(
     private val _productList = MutableStateFlow<List<Product>>(emptyList())
     val productList: StateFlow<List<Product>> = _productList
 
+    private val _favorites = MutableStateFlow<List<String>>(emptyList())
+    val favorites: StateFlow<List<String>> = _favorites
+
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
@@ -119,5 +122,45 @@ class ProductViewModel @Inject constructor(
         }
     }
 
+    fun getFavorites(){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                _favorites.value = productRepository.getFavorites()
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun addFavorites(productId: String){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                productRepository.addFavorites(productId)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+                getFavorites()
+            }
+        }
+    }
+
+    fun removeFavorites(productId: String){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                productRepository.removeFavorites(productId)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+                getFavorites()
+            }
+        }
+    }
 
 }
