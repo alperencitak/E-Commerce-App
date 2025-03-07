@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,9 +42,12 @@ import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 fun ProductPage(navHostController: NavHostController, productId: Int) {
     val productViewModel: ProductViewModel = hiltViewModel()
     val product = productViewModel.product.collectAsState()
+    val favorites = productViewModel.favorites.collectAsState()
     val font = FontFamily(
         Font(R.font.montserrat_bold)
     )
+    productViewModel.getFavorites()
+    println(favorites.value)
     productViewModel.fetchById(productId)
     Column(
         modifier = Modifier
@@ -96,6 +101,18 @@ fun ProductPage(navHostController: NavHostController, productId: Int) {
                 fontFamily = font,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
+            )
+            Icon(
+                imageVector = if (favorites.value.contains(productId.toString())) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                contentDescription = "Favorite Icon",
+                modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp).clickable {
+                    val id = productId.toString()
+                    if(favorites.value.contains(id)){
+                        productViewModel.removeFavorites(id)
+                    }else{
+                        productViewModel.addFavorites(id)
+                    }
+                }
             )
         }
     }
