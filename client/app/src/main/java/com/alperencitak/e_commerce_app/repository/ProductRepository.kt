@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 class ProductRepository @Inject constructor(
     private val api: ProductApiService,
-    private val context: Context
+    private val context: Context,
+    private val dataStoreManager: DataStoreManager
 ) {
 
     suspend fun fetchById(id: Int): Product{
@@ -33,6 +34,18 @@ class ProductRepository @Inject constructor(
 
     suspend fun update(product: Product): Product {
         return api.update(product)
+    }
+
+    suspend fun getFavorites(): List<String>{
+        return dataStoreManager.getFavorites()
+    }
+
+    suspend fun addFavorites(productId: String){
+        return dataStoreManager.addFavorite(productId)
+    }
+
+    suspend fun removeFavorites(productId: String){
+        return dataStoreManager.removeFavorites(productId)
     }
 
 }
