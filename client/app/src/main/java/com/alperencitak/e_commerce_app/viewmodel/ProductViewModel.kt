@@ -25,8 +25,11 @@ class ProductViewModel @Inject constructor(
     private val _productList = MutableStateFlow<List<Product>>(emptyList())
     val productList: StateFlow<List<Product>> = _productList
 
-    private val _favorites = MutableStateFlow<List<String>>(emptyList())
-    val favorites: StateFlow<List<String>> = _favorites
+    private val _favoriteIds = MutableStateFlow<List<String>>(emptyList())
+    val favoriteIds: StateFlow<List<String>> = _favoriteIds
+
+    private val _favorites = MutableStateFlow<List<Product>>(emptyList())
+    val favorites: StateFlow<List<Product>> = _favorites
 
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
@@ -122,11 +125,28 @@ class ProductViewModel @Inject constructor(
         }
     }
 
-    fun getFavorites(){
+    fun getFavorites(favoriteIds: List<String>){
         viewModelScope.launch {
             try {
                 _loading.value = true
-                _favorites.value = productRepository.getFavorites()
+                val favoriteList = mutableListOf<Product>()
+                favoriteIds.forEach { productId ->
+                    favoriteList.add(productRepository.fetchById(productId.toInt()))
+                }
+                _favorites.value = favoriteList
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun getFavoriteIds(){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                _favoriteIds.value = productRepository.getFavorites()
             }catch (e: Exception){
                 e.printStackTrace()
             }finally {
@@ -144,7 +164,7 @@ class ProductViewModel @Inject constructor(
                 e.printStackTrace()
             }finally {
                 _loading.value = false
-                getFavorites()
+                getFavoriteIds()
             }
         }
     }
@@ -158,7 +178,7 @@ class ProductViewModel @Inject constructor(
                 e.printStackTrace()
             }finally {
                 _loading.value = false
-                getFavorites()
+                getFavoriteIds()
             }
         }
     }
