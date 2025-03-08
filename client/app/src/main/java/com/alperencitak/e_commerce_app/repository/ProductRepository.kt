@@ -48,4 +48,16 @@ class ProductRepository @Inject constructor(
         return dataStoreManager.removeFavorites(productId)
     }
 
+    suspend fun getCart(): List<String>{
+        return dataStoreManager.getCart()
+    }
+
+    suspend fun addCart(productId: String){
+        return dataStoreManager.addCart(productId)
+    }
+
+    suspend fun removeCart(productId: String){
+        return dataStoreManager.removeCart(productId)
+    }
+
 }
