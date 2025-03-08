@@ -23,6 +23,36 @@ class DataStoreManager @Inject constructor(@ApplicationContext context: Context)
     companion object {
         private val USER_ID = stringPreferencesKey("USER_ID")
         private val FAVORITE_PRODUCTS = stringPreferencesKey("FAVORITE_PRODUCTS")
+        private val CART = stringPreferencesKey("CART")
+    }
+
+    private suspend fun saveCart(cart: List<String>) {
+        val json = Gson().toJson(cart)
+        dataStore.edit { preferences ->
+            preferences[CART] = json
+        }
+    }
+
+    suspend fun getCart(): List<String>{
+        val preferences = dataStore.data.first()
+        val json = preferences[CART] ?: "[]"
+        return Gson().fromJson(json, object : TypeToken<List<String>>() {}.type)
+    }
+
+    suspend fun addCart(productId: String){
+        val cart = getCart().toMutableList()
+        if (!cart.contains(productId)){
+            cart.add(productId)
+            saveCart(cart)
+        }
+    }
+
+    suspend fun removeCart(productId: String){
+        val cart = getCart().toMutableList()
+        if (cart.contains(productId)){
+            cart.remove(productId)
+            saveCart(cart)
+        }
     }
 
     private suspend fun saveFavorites(favorites: List<String>) {
