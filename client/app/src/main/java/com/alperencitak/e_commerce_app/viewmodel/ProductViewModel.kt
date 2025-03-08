@@ -31,6 +31,12 @@ class ProductViewModel @Inject constructor(
     private val _favorites = MutableStateFlow<List<Product>>(emptyList())
     val favorites: StateFlow<List<Product>> = _favorites
 
+    private val _cartIds = MutableStateFlow<List<String>>(emptyList())
+    val cartIds: StateFlow<List<String>> = _cartIds
+
+    private val _cart = MutableStateFlow<List<Product>>(emptyList())
+    val cart: StateFlow<List<Product>> = _cart
+
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
@@ -179,6 +185,64 @@ class ProductViewModel @Inject constructor(
             }finally {
                 _loading.value = false
                 getFavoriteIds()
+            }
+        }
+    }
+
+    fun getCart(cartIds: List<String>){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                val cartList = mutableListOf<Product>()
+                cartIds.forEach { productId ->
+                    cartList.add(productRepository.fetchById(productId.toInt()))
+                }
+                _cart.value = cartList
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun getCartIds(){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                _cartIds.value = productRepository.getCart()
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun addCart(productId: String){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                productRepository.addCart(productId)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+                getCartIds()
+            }
+        }
+    }
+
+    fun removeCart(productId: String){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                productRepository.removeCart(productId)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+                getCartIds()
             }
         }
     }
