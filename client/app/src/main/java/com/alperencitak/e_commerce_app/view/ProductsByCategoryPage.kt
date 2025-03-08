@@ -49,6 +49,7 @@ import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.model.Product
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
+import com.alperencitak.e_commerce_app.utils.SmallProductCard
 import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 
 
@@ -77,8 +78,8 @@ fun ProductsByCategoryPage(navHostController: NavHostController, categoryId: Int
     if (productResponse.value != null) {
         Column(
             modifier = Modifier
-                .padding(top = 64.dp, start = 8.dp, end = 8.dp)
-                .background(LightCream),
+                .background(LightCream)
+                .padding(top = 64.dp, start = 8.dp, end = 8.dp),
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -95,48 +96,7 @@ fun ProductsByCategoryPage(navHostController: NavHostController, categoryId: Int
                 columns = GridCells.Fixed(2),
             ) {
                 items(productList.value) { product ->
-                    ElevatedCard(
-                        modifier = Modifier
-                            .width(200.dp)
-                            .padding(8.dp)
-                            .clickable {
-                                navHostController.navigate("product/${product.product_id}")
-                            },
-                        shape = RoundedCornerShape(12.dp),
-                        elevation = CardDefaults.cardElevation(6.dp)
-                    ) {
-                        Image(
-                            painter = rememberAsyncImagePainter("http://10.0.2.2:5000/image${product.image_url}"),
-                            contentDescription = "Product Image",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(1f)
-                        )
-                        Text(
-                            text = product.name,
-                            maxLines = 2,
-                            minLines = 2,
-                            lineHeight = 15.sp,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 13.sp,
-                            fontFamily = font,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(
-                                top = 4.dp,
-                                bottom = 12.dp,
-                                start = 4.dp,
-                                end = 4.dp
-                            )
-                        )
-                        Text(
-                            text = "${product.price} TL",
-                            fontSize = 15.sp,
-                            fontFamily = font,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
-                        )
-                    }
+                    SmallProductCard(product, navHostController)
                 }
                 item {
                     if (!isLoadingMore) {

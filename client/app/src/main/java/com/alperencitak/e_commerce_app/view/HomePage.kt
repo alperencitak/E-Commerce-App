@@ -52,6 +52,7 @@ import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
 import com.alperencitak.e_commerce_app.ui.theme.LightGray
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
+import com.alperencitak.e_commerce_app.utils.SmallProductCard
 import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
 
@@ -116,50 +117,7 @@ fun HomePage(navHostController: NavHostController) {
                 .padding(vertical = 8.dp)
         ) {
             items(productList.value) { product ->
-                ElevatedCard(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .padding(horizontal = 8.dp)
-                        .clickable {
-                            navHostController.navigate("product/${product.product_id}")
-                        },
-                    shape = RoundedCornerShape(8.dp),
-                    elevation = CardDefaults.cardElevation(8.dp)
-                ) {
-                    Column {
-                        Image(
-                            painter = rememberAsyncImagePainter("http://10.0.2.2:5000/image${product.image_url}"),
-                            contentScale = ContentScale.Crop,
-                            contentDescription = "Product Image",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(1f)
-                        )
-                        Text(
-                            text = product.name,
-                            maxLines = 2,
-                            minLines = 2,
-                            lineHeight = 15.sp,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 13.sp,
-                            fontFamily = font,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(
-                                top = 4.dp,
-                                bottom = 12.dp,
-                                start = 4.dp,
-                                end = 4.dp
-                            )
-                        )
-                        Text(
-                            text = "${product.price} TL",
-                            fontSize = 15.sp,
-                            fontFamily = font,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
-                        )
-                    }
-                }
+                SmallProductCard(product, navHostController)
             }
         }
         Box(
