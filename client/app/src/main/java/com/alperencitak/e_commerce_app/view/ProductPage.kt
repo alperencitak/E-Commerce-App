@@ -3,10 +3,8 @@ package com.alperencitak.e_commerce_app.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,7 +23,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,11 +39,11 @@ import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 fun ProductPage(navHostController: NavHostController, productId: Int) {
     val productViewModel: ProductViewModel = hiltViewModel()
     val product = productViewModel.product.collectAsState()
-    val favorites = productViewModel.favorites.collectAsState()
+    val favorites = productViewModel.favoriteIds.collectAsState()
     val font = FontFamily(
         Font(R.font.montserrat_bold)
     )
-    productViewModel.getFavorites()
+    productViewModel.getFavoriteIds()
     println(favorites.value)
     productViewModel.fetchById(productId)
     Column(
