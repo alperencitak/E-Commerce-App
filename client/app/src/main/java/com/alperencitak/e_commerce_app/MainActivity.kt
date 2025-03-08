@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 fun ScaffoldWithNavBar() {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-    val barRoutes = listOf("main", "categories", "account")
+    val barRoutes = listOf("main", "categories", "account", "favorites", "cart")
     Scaffold(
         bottomBar = {
             if (barRoutes.contains(currentRoute)) {
@@ -94,7 +94,7 @@ fun ScaffoldWithNavBar() {
                     )
                     NavigationBarItem(
                         selected = currentRoute == "favorites",
-                        onClick = {},
+                        onClick = { navController.navigate("favorites") },
                         icon = {
                             Icon(
                                 painter = painterResource(R.drawable.favorite),
