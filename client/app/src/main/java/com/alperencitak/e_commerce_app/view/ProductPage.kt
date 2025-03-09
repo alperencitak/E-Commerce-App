@@ -120,6 +120,7 @@ fun ProductPage(navHostController: NavHostController, productId: Int) {
                     val id = productId.toString()
                     if(!cartIds.value.contains(id)){
                         productViewModel.addCart(id)
+                        navHostController.navigate("cart")
                     }
                 }
             )
