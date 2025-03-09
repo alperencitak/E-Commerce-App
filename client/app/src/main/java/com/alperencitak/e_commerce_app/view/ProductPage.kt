@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,11 +41,12 @@ fun ProductPage(navHostController: NavHostController, productId: Int) {
     val productViewModel: ProductViewModel = hiltViewModel()
     val product = productViewModel.product.collectAsState()
     val favorites = productViewModel.favoriteIds.collectAsState()
+    val cartIds = productViewModel.cartIds.collectAsState()
     val font = FontFamily(
         Font(R.font.montserrat_bold)
     )
     productViewModel.getFavoriteIds()
-    println(favorites.value)
+    productViewModel.getCartIds()
     productViewModel.fetchById(productId)
     Column(
         modifier = Modifier
@@ -108,6 +110,16 @@ fun ProductPage(navHostController: NavHostController, productId: Int) {
                         productViewModel.removeFavorites(id)
                     }else{
                         productViewModel.addFavorites(id)
+                    }
+                }
+            )
+            Icon(
+                imageVector = Icons.Filled.ShoppingCart,
+                contentDescription = "Cart Icon",
+                modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp).clickable {
+                    val id = productId.toString()
+                    if(!cartIds.value.contains(id)){
+                        productViewModel.addCart(id)
                     }
                 }
             )
