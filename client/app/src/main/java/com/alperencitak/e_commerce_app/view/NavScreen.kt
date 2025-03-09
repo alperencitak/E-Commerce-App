@@ -39,7 +39,7 @@ fun NavScreen(navController: NavHostController, paddingValues: PaddingValues) {
             FavoritesPage(navController)
         }
         composable("cart") {
-            CartPage(navController)
+            CartPage(navController, paddingValues)
         }
         composable("products_by_category/{category_id}") { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("category_id")?.toIntOrNull() ?: 0
