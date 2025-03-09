@@ -1,6 +1,7 @@
 package com.alperencitak.e_commerce_app.view
 
 import android.graphics.drawable.Icon
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
@@ -40,8 +42,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.alperencitak.e_commerce_app.R
+import com.alperencitak.e_commerce_app.ui.theme.DarkPurple
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
+import com.alperencitak.e_commerce_app.ui.theme.LightPurple
+import com.alperencitak.e_commerce_app.ui.theme.Purple
+import com.alperencitak.e_commerce_app.ui.theme.SmoothPurple
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
+import com.alperencitak.e_commerce_app.ui.theme.White
 import com.alperencitak.e_commerce_app.viewmodel.AuthViewModel
 import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
 
@@ -64,7 +71,7 @@ fun AccountPage(navHostController: NavHostController) {
     }
     if(user.value != null){
         Column(
-            modifier = Modifier.fillMaxSize().background(LightCream).padding(top = 64.dp),
+            modifier = Modifier.fillMaxSize().background(White).padding(top = 64.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
@@ -108,7 +115,12 @@ fun AccountPage(navHostController: NavHostController) {
                     }
                 },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 64.dp, vertical = 12.dp),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = DarkPurple
+                ),
+                border = BorderStroke(1.dp, DarkPurple)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -146,7 +158,7 @@ fun ButtonRow(icon: ImageVector, text: String,onClick: () -> Unit){
     ) {
         HorizontalDivider(
             thickness = 2.dp,
-            color = Color.Gray
+            color = LightPurple
         )
         Row(
             modifier = Modifier.fillMaxWidth(),

@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.Font
@@ -52,13 +53,16 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.ui.theme.Blue
+import com.alperencitak.e_commerce_app.ui.theme.DarkPurple
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.Gray
 import com.alperencitak.e_commerce_app.ui.theme.LightBlue
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
 import com.alperencitak.e_commerce_app.ui.theme.LightGray
+import com.alperencitak.e_commerce_app.ui.theme.Purple
 import com.alperencitak.e_commerce_app.ui.theme.SmoothRed
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
+import com.alperencitak.e_commerce_app.ui.theme.White
 import com.alperencitak.e_commerce_app.utils.Dialog
 import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 
@@ -68,7 +72,6 @@ fun CartPage(navHostController: NavHostController, paddingValues: PaddingValues)
     val productViewModel: ProductViewModel = hiltViewModel()
     val cartIds = productViewModel.cartIds.collectAsState()
     val cart = productViewModel.cart.collectAsState()
-    val openAlertDialog = remember { mutableStateOf(false) }
     var totalPrice: Double = cart.value.sumOf { it.price.toDouble() }
     val font = FontFamily(
         Font(R.font.montserrat_bold)
@@ -79,18 +82,24 @@ fun CartPage(navHostController: NavHostController, paddingValues: PaddingValues)
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightCream),
+            .background(White),
     ) {
-        Text(
-            text = "Cart (${cartIds.value.size} Product)",
-            fontFamily = font,
-            fontSize = 18.sp,
-            color = DarkerSoftBeige,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 64.dp, bottom = 16.dp),
-            textAlign = TextAlign.Center
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth().background(DarkPurple),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Cart (${cartIds.value.size} Product)",
+                fontFamily = font,
+                fontSize = 18.sp,
+                color = White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 64.dp, bottom = 24.dp)
+            )
+        }
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -98,6 +107,7 @@ fun CartPage(navHostController: NavHostController, paddingValues: PaddingValues)
                 .padding(start = 16.dp, end = 16.dp)
         ) {
             items(cart.value) { product ->
+                val openAlertDialog = remember { mutableStateOf(false) }
                 if(openAlertDialog.value){
                     Dialog(
                         icon = Icons.Outlined.Delete,
@@ -115,7 +125,13 @@ fun CartPage(navHostController: NavHostController, paddingValues: PaddingValues)
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 12.dp),
+                        .padding(horizontal = 8.dp, vertical = 12.dp)
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = RoundedCornerShape(8.dp),
+                            ambientColor = Purple,
+                            spotColor = Purple
+                        ),
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Row(
@@ -217,7 +233,7 @@ fun CartPage(navHostController: NavHostController, paddingValues: PaddingValues)
 
                     },
                     colors = ButtonDefaults.elevatedButtonColors(
-                        containerColor = DarkerSoftBeige,
+                        containerColor = DarkPurple,
                     )
                 ) {
                     Text(text = "Confirm Cart", color = Color.White, fontFamily = font)

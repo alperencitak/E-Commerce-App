@@ -13,6 +13,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -24,6 +25,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.model.Product
+import com.alperencitak.e_commerce_app.ui.theme.Purple
 
 
 @Composable
@@ -35,6 +37,12 @@ fun SmallProductCard(product: Product, navHostController: NavHostController) {
         modifier = Modifier
             .width(200.dp)
             .padding(8.dp)
+            .shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(8.dp),
+                ambientColor = Purple,
+                spotColor = Purple
+            )
             .clickable {
                 navHostController.navigate("product/${product.product_id}")
             },

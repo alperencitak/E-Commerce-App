@@ -23,9 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.alperencitak.e_commerce_app.ui.theme.Blue
+import com.alperencitak.e_commerce_app.ui.theme.DarkPurple
 import com.alperencitak.e_commerce_app.ui.theme.ECommerceAppTheme
 import com.alperencitak.e_commerce_app.ui.theme.Gray
 import com.alperencitak.e_commerce_app.ui.theme.LightBlue
+import com.alperencitak.e_commerce_app.ui.theme.Purple
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
 import com.alperencitak.e_commerce_app.view.NavScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,7 +60,7 @@ fun ScaffoldWithNavBar() {
                     modifier = Modifier
                         .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
                 ) {
-                    val itemColor = SoftBeige
+                    val itemColor = Purple
                     NavigationBarItem(
                         selected = currentRoute == "main",
                         onClick = { navController.navigate("main") },

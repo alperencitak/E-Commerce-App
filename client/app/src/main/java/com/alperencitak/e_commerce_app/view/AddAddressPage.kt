@@ -50,10 +50,13 @@ import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.model.Address
 import com.alperencitak.e_commerce_app.ui.theme.Blue
 import com.alperencitak.e_commerce_app.ui.theme.DarkGreen
+import com.alperencitak.e_commerce_app.ui.theme.DarkPurple
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.Gray
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
+import com.alperencitak.e_commerce_app.ui.theme.Purple
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
+import com.alperencitak.e_commerce_app.ui.theme.White
 import com.alperencitak.e_commerce_app.ui.theme.WhiteModern
 import com.alperencitak.e_commerce_app.viewmodel.AddressViewModel
 import com.alperencitak.e_commerce_app.viewmodel.AuthViewModel
@@ -90,20 +93,21 @@ fun AddAddressPage(navHostController: NavHostController){
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightCream),
+            .background(White),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .background(DarkPurple)
+                .padding(top = 64.dp, bottom = 24.dp, start = 16.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = "Close Icon",
-                tint = DarkerSoftBeige,
+                tint = White,
                 modifier = Modifier
                     .size(32.dp)
                     .clickable {
@@ -114,10 +118,9 @@ fun AddAddressPage(navHostController: NavHostController){
                 text = "Add New Addresses",
                 fontFamily = font,
                 fontSize = 19.sp,
-                color = DarkerSoftBeige,
+                color = White,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 64.dp),
+                    .fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
         }
@@ -203,12 +206,12 @@ fun AddAddressPage(navHostController: NavHostController){
                     selected = index == line1SelectedIndex,
                     label = { Text(label, fontFamily = font) },
                     colors = SegmentedButtonDefaults.colors(
-                        inactiveContainerColor = SoftBeige,
-                        activeContainerColor = DarkerSoftBeige,
-                        inactiveContentColor = WhiteModern,
-                        activeContentColor = LightCream,
-                        inactiveBorderColor = DarkerSoftBeige,
-                        activeBorderColor = Color.Gray,
+                        inactiveContainerColor = Purple,
+                        activeContainerColor = DarkPurple,
+                        inactiveContentColor = White,
+                        activeContentColor = White,
+                        inactiveBorderColor = Purple,
+                        activeBorderColor = DarkPurple,
                     )
                 )
             }
@@ -243,10 +246,8 @@ fun AddAddressPage(navHostController: NavHostController){
                         city = city,
                         country = country
                     )
-                    val addedAddress = addressViewModel.add(address)
-                    if(addedAddress != null){
-                        navHostController.popBackStack()
-                    }
+                    addressViewModel.add(address)
+                    navHostController.popBackStack()
                 }
             },
             modifier = Modifier
@@ -254,7 +255,7 @@ fun AddAddressPage(navHostController: NavHostController){
                 .padding(horizontal = 8.dp, vertical = 24.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = DarkGreen
+                containerColor = DarkPurple
             )
         ) {
             Row(
@@ -264,7 +265,8 @@ fun AddAddressPage(navHostController: NavHostController){
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add Icon"
+                    contentDescription = "Add Icon",
+                    tint = White
                 )
             }
         }

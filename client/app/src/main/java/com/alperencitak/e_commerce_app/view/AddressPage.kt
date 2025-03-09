@@ -44,8 +44,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.ui.theme.DarkGreen
+import com.alperencitak.e_commerce_app.ui.theme.DarkPurple
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
+import com.alperencitak.e_commerce_app.ui.theme.White
 import com.alperencitak.e_commerce_app.utils.Dialog
 import com.alperencitak.e_commerce_app.viewmodel.AddressViewModel
 import com.alperencitak.e_commerce_app.viewmodel.AuthViewModel
@@ -73,20 +75,21 @@ fun AddressPage(navHostController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightCream),
+            .background(White),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .background(DarkPurple)
+                .padding(top = 64.dp, bottom = 24.dp, start = 16.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = "Close Icon",
-                tint = DarkerSoftBeige,
+                tint = White,
                 modifier = Modifier
                     .size(32.dp)
                     .clickable {
@@ -97,10 +100,9 @@ fun AddressPage(navHostController: NavHostController) {
                 text = "My Addresses",
                 fontFamily = font,
                 fontSize = 19.sp,
-                color = DarkerSoftBeige,
+                color = White,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 64.dp),
+                    .fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
         }
@@ -111,7 +113,8 @@ fun AddressPage(navHostController: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 24.dp),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(12.dp),
+            border = BorderStroke(1.dp, DarkPurple)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -120,7 +123,8 @@ fun AddressPage(navHostController: NavHostController) {
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add Icon"
+                    contentDescription = "Add Icon",
+                    tint = DarkPurple
                 )
             }
         }

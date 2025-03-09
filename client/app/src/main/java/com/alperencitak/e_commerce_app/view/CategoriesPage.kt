@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -38,9 +40,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.ui.theme.Blue
+import com.alperencitak.e_commerce_app.ui.theme.DarkPurple
 import com.alperencitak.e_commerce_app.ui.theme.LightBlue
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
+import com.alperencitak.e_commerce_app.ui.theme.Purple
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
+import com.alperencitak.e_commerce_app.ui.theme.White
 import com.alperencitak.e_commerce_app.viewmodel.CategoryViewModel
 
 
@@ -58,23 +63,29 @@ fun CategoriesPage(navHostController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightCream)
+            .background(White)
     ) {
-        Text(
-            text = "CATEGORIES",
-            fontFamily = font,
-            fontSize = 18.sp,
-            color = SoftBeige,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 64.dp, bottom = 48.dp)
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth().background(DarkPurple),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Categories",
+                fontFamily = font,
+                fontSize = 18.sp,
+                color = White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 64.dp, bottom = 24.dp)
+            )
+        }
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(top = 12.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             items(categories.value) { category ->
@@ -83,6 +94,12 @@ fun CategoriesPage(navHostController: NavHostController) {
                         .fillMaxWidth()
                         .aspectRatio(1f)
                         .padding(12.dp)
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = RoundedCornerShape(8.dp),
+                            ambientColor = Purple,
+                            spotColor = Purple
+                        )
                         .clickable {
                             navHostController.navigate("child_categories/${category.category_id}")
                         },
@@ -98,7 +115,7 @@ fun CategoriesPage(navHostController: NavHostController) {
                             text = category.name,
                             fontFamily = font,
                             fontSize = 16.sp,
-                            color = SoftBeige,
+                            color = DarkPurple,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.align(Alignment.Center)
                         )

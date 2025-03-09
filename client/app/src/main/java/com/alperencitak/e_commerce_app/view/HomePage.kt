@@ -49,9 +49,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.alperencitak.e_commerce_app.R
+import com.alperencitak.e_commerce_app.ui.theme.DarkPurple
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
 import com.alperencitak.e_commerce_app.ui.theme.LightGray
+import com.alperencitak.e_commerce_app.ui.theme.LightPurple
+import com.alperencitak.e_commerce_app.ui.theme.Purple
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
+import com.alperencitak.e_commerce_app.ui.theme.White
 import com.alperencitak.e_commerce_app.utils.SmallProductCard
 import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
@@ -73,7 +77,7 @@ fun HomePage(navHostController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightCream)
+            .background(White)
             .verticalScroll(scrollState)
     ) {
         Text(
@@ -86,7 +90,7 @@ fun HomePage(navHostController: NavHostController) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.Gray)
+                .background(DarkPurple)
                 .padding(horizontal = 16.dp, vertical = 24.dp),
             shape = RoundedCornerShape(8.dp)
         ) {
@@ -113,8 +117,8 @@ fun HomePage(navHostController: NavHostController) {
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(LightGray)
-                .padding(vertical = 8.dp)
+                .background(White)
+                .padding(top = 8.dp, bottom = 16.dp)
         ) {
             items(productList.value) { product ->
                 SmallProductCard(product, navHostController)
@@ -124,14 +128,14 @@ fun HomePage(navHostController: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(LightGray, SoftBeige)
+                    brush = Brush.verticalGradient(
+                        colors = listOf(White, LightPurple)
                     )
                 )
         ) {
             Column(
                 modifier = Modifier.padding(
-                    top = 64.dp,
+                    top = 32.dp,
                     bottom = 64.dp,
                     start = 32.dp,
                     end = 32.dp
