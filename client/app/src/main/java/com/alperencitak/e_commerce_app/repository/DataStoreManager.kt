@@ -33,6 +33,12 @@ class DataStoreManager @Inject constructor(@ApplicationContext context: Context)
         }
     }
 
+    suspend fun clearCart() {
+        dataStore.edit { preferences ->
+            preferences[CART] = "[]"
+        }
+    }
+
     suspend fun getCart(): List<String>{
         val preferences = dataStore.data.first()
         val json = preferences[CART] ?: "[]"
