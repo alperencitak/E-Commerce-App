@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -77,59 +78,74 @@ fun FavoritesPage(navHostController: NavHostController){
                     .padding(top = 64.dp, bottom = 24.dp)
             )
         }
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 128.dp)
-        ) {
-            items(favorites.value) { product ->
-                ElevatedCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 12.dp)
-                        .shadow(
-                            elevation = 8.dp,
-                            shape = RoundedCornerShape(8.dp),
-                            ambientColor = Purple,
-                            spotColor = Purple
-                        )
-                        .clickable {
-                            navHostController.navigate("product/${product.product_id}")
-                        },
-                    shape = RoundedCornerShape(12.dp),
-                    elevation = CardDefaults.cardElevation(6.dp)
-                ) {
-                    Image(
-                        painter = rememberAsyncImagePainter("http://10.0.2.2:5000/image${product.image_url}"),
-                        contentDescription = "Product Image",
-                        contentScale = ContentScale.Crop,
+        if(favorites.value.isNotEmpty()){
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 128.dp)
+            ) {
+                items(favorites.value) { product ->
+                    ElevatedCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(1f)
-                    )
-                    Text(
-                        text = product.name,
-                        maxLines = 2,
-                        minLines = 2,
-                        lineHeight = 15.sp,
-                        overflow = TextOverflow.Ellipsis,
-                        fontSize = 13.sp,
-                        fontFamily = font,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(
-                            top = 4.dp,
-                            bottom = 12.dp,
-                            start = 4.dp,
-                            end = 4.dp
+                            .padding(horizontal = 8.dp, vertical = 12.dp)
+                            .shadow(
+                                elevation = 8.dp,
+                                shape = RoundedCornerShape(8.dp),
+                                ambientColor = Purple,
+                                spotColor = Purple
+                            )
+                            .clickable {
+                                navHostController.navigate("product/${product.product_id}")
+                            },
+                        shape = RoundedCornerShape(12.dp),
+                        elevation = CardDefaults.cardElevation(6.dp)
+                    ) {
+                        Image(
+                            painter = rememberAsyncImagePainter("http://10.0.2.2:5000/image${product.image_url}"),
+                            contentDescription = "Product Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(1f)
                         )
-                    )
-                    Text(
-                        text = "${product.price} TL",
-                        fontSize = 15.sp,
-                        fontFamily = font,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
-                    )
+                        Text(
+                            text = product.name,
+                            maxLines = 2,
+                            minLines = 2,
+                            lineHeight = 15.sp,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 13.sp,
+                            fontFamily = font,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(
+                                top = 4.dp,
+                                bottom = 12.dp,
+                                start = 4.dp,
+                                end = 4.dp
+                            )
+                        )
+                        Text(
+                            text = "${product.price} TL",
+                            fontSize = 15.sp,
+                            fontFamily = font,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
+                        )
+                    }
                 }
             }
+        }else{
+            Text(
+                text = "You haven't added any products to your favorites.",
+                fontSize = 17.sp,
+                fontFamily = font,
+                fontWeight = FontWeight.Bold,
+                color = Color.Gray,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(vertical = 32.dp, horizontal = 32.dp),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
