@@ -72,7 +72,7 @@ fun CartPage(navHostController: NavHostController, paddingValues: PaddingValues)
     val productViewModel: ProductViewModel = hiltViewModel()
     val cartIds = productViewModel.cartIds.collectAsState()
     val cart = productViewModel.cart.collectAsState()
-    var totalPrice: Double = cart.value.sumOf { it.price.toDouble() }
+    val totalPrice: Double = cart.value.sumOf { it.price.toDouble() }
     val font = FontFamily(
         Font(R.font.montserrat_bold)
     )
@@ -100,103 +100,119 @@ fun CartPage(navHostController: NavHostController, paddingValues: PaddingValues)
                     .padding(top = 64.dp, bottom = 24.dp)
             )
         }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(start = 16.dp, end = 16.dp)
-        ) {
-            items(cart.value) { product ->
-                val openAlertDialog = remember { mutableStateOf(false) }
-                if(openAlertDialog.value){
-                    Dialog(
-                        icon = Icons.Outlined.Delete,
-                        onDismissRequest = {
-                            openAlertDialog.value = false
-                        },
-                        onConfirmation = {
-                            openAlertDialog.value = false
-                            productViewModel.removeCart(product.product_id.toString())
-                        },
-                        dialogTitle = "Remove From Cart",
-                        dialogText = "Are you sure you want to remove this item from your cart?"
-                    )
-                }
-                ElevatedCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 12.dp)
-                        .shadow(
-                            elevation = 8.dp,
-                            shape = RoundedCornerShape(8.dp),
-                            ambientColor = Purple,
-                            spotColor = Purple
-                        ),
-                    elevation = CardDefaults.cardElevation(4.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 8.dp)
-                            .clickable {
-                                navHostController.navigate("product/${product.product_id}")
+        if(cart.value.isNotEmpty()){
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(start = 16.dp, end = 16.dp)
+            ) {
+                items(cart.value) { product ->
+                    val openAlertDialog = remember { mutableStateOf(false) }
+                    if(openAlertDialog.value){
+                        Dialog(
+                            icon = Icons.Outlined.Delete,
+                            onDismissRequest = {
+                                openAlertDialog.value = false
                             },
-                    ) {
-                        Image(
-                            painter = rememberAsyncImagePainter("http://10.0.2.2:5000/image${product.image_url}"),
-                            contentDescription = "Product Image",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(1f)
-                                .padding(4.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .border(1.dp, LightGray, RoundedCornerShape(8.dp))
-                        )
-                        Text(
-                            text = product.name,
-                            maxLines = 3,
-                            minLines = 3,
-                            lineHeight = 15.sp,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 13.sp,
-                            fontFamily = font,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.weight(2f).padding(
-                                top = 12.dp,
-                                bottom = 12.dp,
-                                start = 4.dp,
-                                end = 4.dp
-                            )
+                            onConfirmation = {
+                                openAlertDialog.value = false
+                                productViewModel.removeCart(product.product_id.toString())
+                            },
+                            dialogTitle = "Remove From Cart",
+                            dialogText = "Are you sure you want to remove this item from your cart?"
                         )
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp, bottom = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                    ElevatedCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 12.dp)
+                            .shadow(
+                                elevation = 8.dp,
+                                shape = RoundedCornerShape(8.dp),
+                                ambientColor = Purple,
+                                spotColor = Purple
+                            ),
+                        shape = RoundedCornerShape(8.dp),
+                        elevation = CardDefaults.cardElevation(8.dp)
                     ) {
-                        OutlinedCard(
-                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
-                            border = BorderStroke(2.dp, LightGray)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 8.dp)
+                                .clickable {
+                                    navHostController.navigate("product/${product.product_id}")
+                                },
                         ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Delete,
-                                contentDescription = "Delete Icon",
-                                tint = SmoothRed,
-                                modifier = Modifier.padding(4.dp).clickable {
-                                    openAlertDialog.value = true
-                                }
+                            Image(
+                                painter = rememberAsyncImagePainter("http://10.0.2.2:5000/image${product.image_url}"),
+                                contentDescription = "Product Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .aspectRatio(1f)
+                                    .padding(4.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .border(1.dp, LightGray, RoundedCornerShape(8.dp))
+                            )
+                            Text(
+                                text = product.name,
+                                maxLines = 3,
+                                minLines = 3,
+                                lineHeight = 15.sp,
+                                overflow = TextOverflow.Ellipsis,
+                                fontSize = 13.sp,
+                                fontFamily = font,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.weight(2f).padding(
+                                    top = 12.dp,
+                                    bottom = 12.dp,
+                                    start = 4.dp,
+                                    end = 4.dp
+                                )
                             )
                         }
-                        Text(
-                            text = "${product.price} TL",
-                            fontSize = 15.sp,
-                            fontFamily = font,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp, bottom = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            OutlinedCard(
+                                modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
+                                border = BorderStroke(2.dp, LightGray)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Delete,
+                                    contentDescription = "Delete Icon",
+                                    tint = SmoothRed,
+                                    modifier = Modifier.padding(4.dp).clickable {
+                                        openAlertDialog.value = true
+                                    }
+                                )
+                            }
+                            Text(
+                                text = "${product.price} TL",
+                                fontSize = 15.sp,
+                                fontFamily = font,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
+                            )
+                        }
                     }
                 }
             }
+        }else{
+            Text(
+                text = "Your Cart is Empty.",
+                fontSize = 17.sp,
+                fontFamily = font,
+                fontWeight = FontWeight.Bold,
+                color = Color.Gray,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(vertical = 32.dp, horizontal = 32.dp),
+                textAlign = TextAlign.Center
+            )
         }
         Card(
             modifier = Modifier.fillMaxWidth().padding(bottom = paddingValues.calculateBottomPadding() + 8.dp),
@@ -230,11 +246,12 @@ fun CartPage(navHostController: NavHostController, paddingValues: PaddingValues)
                 }
                 Button(
                     onClick = {
-
+                        navHostController.navigate("payment")
                     },
                     colors = ButtonDefaults.elevatedButtonColors(
                         containerColor = DarkPurple,
-                    )
+                    ),
+                    enabled = cart.value.isNotEmpty()
                 ) {
                     Text(text = "Confirm Cart", color = Color.White, fontFamily = font)
                 }
