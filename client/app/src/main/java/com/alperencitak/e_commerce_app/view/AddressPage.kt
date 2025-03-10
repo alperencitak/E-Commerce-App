@@ -62,7 +62,6 @@ fun AddressPage(navHostController: NavHostController) {
     val currentUserId = authViewModel.currentUserId.collectAsState()
     val user = userViewModel.user.collectAsState()
     val addressList = addressViewModel.addressList.collectAsState()
-    val openAlertDialog = remember { mutableStateOf(false) }
     val font = FontFamily(
         Font(R.font.montserrat_bold)
     )
@@ -133,6 +132,7 @@ fun AddressPage(navHostController: NavHostController) {
                 .fillMaxWidth()
         ) {
             items(addressList.value) { address ->
+                val openAlertDialog = remember { mutableStateOf(false) }
                 if (openAlertDialog.value) {
                     Dialog(
                         onDismissRequest = {
