@@ -247,4 +247,18 @@ class ProductViewModel @Inject constructor(
         }
     }
 
+    fun clearCart(){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                productRepository.clearCart()
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+                getCartIds()
+            }
+        }
+    }
+
 }

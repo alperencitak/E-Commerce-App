@@ -60,4 +60,8 @@ class ProductRepository @Inject constructor(
         return dataStoreManager.removeCart(productId)
     }
 
+    suspend fun clearCart(){
+        return dataStoreManager.clearCart()
+    }
+
 }
