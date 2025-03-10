@@ -57,6 +57,7 @@ import com.alperencitak.e_commerce_app.ui.theme.Purple
 import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.White
 import com.alperencitak.e_commerce_app.utils.SmallProductCard
+import com.alperencitak.e_commerce_app.viewmodel.AddressViewModel
 import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
 
@@ -64,6 +65,8 @@ import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
 fun HomePage(navHostController: NavHostController) {
     val userViewModel: UserViewModel = hiltViewModel()
     val productViewModel: ProductViewModel = hiltViewModel()
+    val addressViewModel: AddressViewModel = hiltViewModel()
+    val address = addressViewModel.address.collectAsState()
     val productList = productViewModel.productList.collectAsState()
     val user = userViewModel.user.collectAsState()
     val font = FontFamily(
@@ -73,6 +76,9 @@ fun HomePage(navHostController: NavHostController) {
     )
     productViewModel.fetchBestSellers()
     userViewModel.fetchUserById(101)
+    user.value?.let {
+        addressViewModel.fetchById(it.current_address_id)
+    }
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -91,8 +97,7 @@ fun HomePage(navHostController: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(DarkPurple)
-                .padding(horizontal = 16.dp, vertical = 24.dp),
-            shape = RoundedCornerShape(8.dp)
+                .padding(horizontal = 16.dp, vertical = 24.dp), shape = RoundedCornerShape(8.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -103,7 +108,7 @@ fun HomePage(navHostController: NavHostController) {
                     modifier = Modifier.padding(start = 8.dp)
                 )
                 Text(
-                    text = "Test/Türkiye, Test mahallesi Test sokak No:1 Daire:1",
+                    text = if (address.value != null) "${address.value!!.city}/${address.value!!.country}, ${address.value!!.address_line2}" else "",
                     fontSize = 14.sp,
                     fontFamily = font,
                     minLines = 1,
@@ -135,26 +140,12 @@ fun HomePage(navHostController: NavHostController) {
         ) {
             Column(
                 modifier = Modifier.padding(
-                    top = 32.dp,
-                    bottom = 64.dp,
-                    start = 32.dp,
-                    end = 32.dp
-                ),
-                verticalArrangement = Arrangement.Center
+                    top = 32.dp, bottom = 64.dp, start = 32.dp, end = 32.dp
+                ), verticalArrangement = Arrangement.Center
             ) {
                 Text(text = "HOME", fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 Text(
-                    text = "\nLorem Ipsum is simply dummy text of the printing " +
-                            "and typesetting industry. Lorem Ipsum has been the " +
-                            "industry's standard dummy text ever since the 1500s, when an" +
-                            "and typesetting industry. Lorem Ipsum has been the " +
-                            "industry's standard dummy text ever since the 1500s, when an" +
-                            "and typesetting industry. Lorem Ipsum has been the " +
-                            "industry's standard dummy text ever since the 1500s, when an" +
-                            "and typesetting industry. Lorem Ipsum has been the " +
-                            "industry's standard dummy text ever since the 1500s, when an" +
-                            "and typesetting industry. Lorem Ipsum has been the " +
-                            "industry's standard dummy text ever since the 1500s, when an",
+                    text = "\nLorem Ipsum is simply dummy text of the printing " + "and typesetting industry. Lorem Ipsum has been the " + "industry's standard dummy text ever since the 1500s, when an" + "and typesetting industry. Lorem Ipsum has been the " + "industry's standard dummy text ever since the 1500s, when an" + "and typesetting industry. Lorem Ipsum has been the " + "industry's standard dummy text ever since the 1500s, when an" + "and typesetting industry. Lorem Ipsum has been the " + "industry's standard dummy text ever since the 1500s, when an" + "and typesetting industry. Lorem Ipsum has been the " + "industry's standard dummy text ever since the 1500s, when an",
                     fontSize = 16.sp,
                     fontFamily = font
                 )
@@ -169,15 +160,15 @@ fun ScrollableCard() {
     val pagerState = rememberPagerState { 4 }
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         shape = CutCornerShape(0.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Box {
             HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxWidth().aspectRatio(16f/9f)
+                state = pagerState, modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(16f / 9f)
             ) { page ->
                 Image(
                     painter = painterResource(R.drawable.test),
@@ -191,8 +182,7 @@ fun ScrollableCard() {
                     .wrapContentHeight()
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.Center
+                    .padding(bottom = 8.dp), horizontalArrangement = Arrangement.Center
             ) {
                 repeat(pagerState.pageCount) { iteration ->
                     val color =
