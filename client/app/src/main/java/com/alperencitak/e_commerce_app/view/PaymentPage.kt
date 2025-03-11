@@ -28,6 +28,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,13 +48,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.alperencitak.e_commerce_app.R
+import com.alperencitak.e_commerce_app.model.OrderRequest
 import com.alperencitak.e_commerce_app.ui.theme.DarkPurple
-import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.Purple
 import com.alperencitak.e_commerce_app.ui.theme.White
 import com.alperencitak.e_commerce_app.utils.LoadingBar
 import com.alperencitak.e_commerce_app.viewmodel.AddressViewModel
 import com.alperencitak.e_commerce_app.viewmodel.AuthViewModel
+import com.alperencitak.e_commerce_app.viewmodel.OrderDetailViewModel
+import com.alperencitak.e_commerce_app.viewmodel.OrderViewModel
 import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
 
@@ -64,6 +67,9 @@ fun PaymentPage(navHostController: NavHostController) {
     val userViewModel: UserViewModel = hiltViewModel()
     val authViewModel: AuthViewModel = hiltViewModel()
     val productViewModel: ProductViewModel = hiltViewModel()
+    val orderViewModel: OrderViewModel = hiltViewModel()
+    val orderDetailViewModel: OrderDetailViewModel = hiltViewModel()
+    val order = orderViewModel.order.collectAsState()
     val currentUserId = authViewModel.currentUserId.collectAsState()
     val user = userViewModel.user.collectAsState()
     val address = addressViewModel.address.collectAsState()
@@ -85,6 +91,15 @@ fun PaymentPage(navHostController: NavHostController) {
     }
     productViewModel.getCartIds()
     productViewModel.getCart(cartIds.value)
+    LaunchedEffect(order.value) {
+        order.value?.let {
+            orderDetailViewModel.addMany(it.order_id, cart.value)
+            productViewModel.clearCart()
+            navHostController.navigate("order_success"){
+                popUpTo("payment"){ inclusive = true }
+            }
+        }
+    }
 
     if (address.value != null && user.value != null) {
         Column(
@@ -312,17 +327,11 @@ fun PaymentPage(navHostController: NavHostController) {
                 )
                 OutlinedTextField(
                     value = "",
-                    onValueChange = {
-//                        if (it.length <= 100) {
-//
-//                        }
-                    },
+                    onValueChange = {},
                     label = { Text("fullname", fontFamily = font) },
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent,
-//                        unfocusedBorderColor = if () Color.Red else DarkerSoftBeige,
-//                        focusedBorderColor = if () Color.Red else DarkerSoftBeige
                     ),
                     singleLine = true,
                     modifier = Modifier
@@ -331,17 +340,11 @@ fun PaymentPage(navHostController: NavHostController) {
                 )
                 OutlinedTextField(
                     value = "",
-                    onValueChange = {
-//                        if (it.length <= 100) {
-//
-//                        }
-                    },
+                    onValueChange = {},
                     label = { Text("number", fontFamily = font) },
                     colors = OutlinedTextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent,
-//                        unfocusedBorderColor = if () Color.Red else DarkerSoftBeige,
-//                        focusedBorderColor = if () Color.Red else DarkerSoftBeige
                     ),
                     singleLine = true,
                     modifier = Modifier
@@ -356,17 +359,11 @@ fun PaymentPage(navHostController: NavHostController) {
                 ) {
                     OutlinedTextField(
                         value = "",
-                        onValueChange = {
-//                        if (it.length <= 100) {
-//
-//                        }
-                        },
+                        onValueChange = {},
                         label = { Text("date", fontFamily = font) },
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedContainerColor = Color.Transparent,
                             focusedContainerColor = Color.Transparent,
-//                        unfocusedBorderColor = if () Color.Red else DarkerSoftBeige,
-//                        focusedBorderColor = if () Color.Red else DarkerSoftBeige
                         ),
                         singleLine = true,
                         modifier = Modifier
@@ -375,17 +372,11 @@ fun PaymentPage(navHostController: NavHostController) {
                     )
                     OutlinedTextField(
                         value = "",
-                        onValueChange = {
-//                        if (it.length <= 100) {
-//
-//                        }
-                        },
+                        onValueChange = {},
                         label = { Text("security", fontFamily = font) },
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedContainerColor = Color.Transparent,
                             focusedContainerColor = Color.Transparent,
-//                        unfocusedBorderColor = if () Color.Red else DarkerSoftBeige,
-//                        focusedBorderColor = if () Color.Red else DarkerSoftBeige
                         ),
                         singleLine = true,
                         modifier = Modifier
@@ -428,7 +419,11 @@ fun PaymentPage(navHostController: NavHostController) {
                     }
                     Button(
                         onClick = {
-                            productViewModel.clearCart()
+                            val orderRequest = OrderRequest(
+                                user_id = user.value!!.user_id,
+                                total_amount = totalPrice.toBigDecimal()
+                            )
+                            orderViewModel.add(orderRequest)
                         },
                         colors = ButtonDefaults.elevatedButtonColors(
                             containerColor = DarkPurple,
