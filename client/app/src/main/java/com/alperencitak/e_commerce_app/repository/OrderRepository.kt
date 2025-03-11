@@ -3,6 +3,7 @@ package com.alperencitak.e_commerce_app.repository
 import android.content.Context
 import com.alperencitak.e_commerce_app.api.OrderApiService
 import com.alperencitak.e_commerce_app.model.Order
+import com.alperencitak.e_commerce_app.model.OrderRequest
 import javax.inject.Inject
 
 class OrderRepository @Inject constructor(
@@ -18,8 +19,8 @@ class OrderRepository @Inject constructor(
         return api.getByUserId(userId)
     }
 
-    suspend fun add(order: Order): Order {
-        return api.add(order)
+    suspend fun add(orderRequest: OrderRequest): Order {
+        return api.add(orderRequest)
     }
 
     suspend fun deleteById(id: Int){
