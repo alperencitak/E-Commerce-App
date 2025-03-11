@@ -36,6 +36,14 @@ class AddOrderDetailResponse(MethodView):
         return OrderDetailService.add(data)
 
 
+@order_detail_bp.route("/add-all")
+class AddOrderDetailResponse(MethodView):
+    @order_detail_bp.response(HTTPStatus.CREATED, OrderDetailSchema(many=True))
+    @order_detail_bp.arguments(OrderDetailSchema(many=True))
+    def post(self, data):
+        return OrderDetailService.add_all(data)
+
+
 @order_detail_bp.route("/delete/<int:order_detail_id>")
 class DeleteOrderDetailResponse(MethodView):
     @order_detail_bp.response(HTTPStatus.NO_CONTENT)
