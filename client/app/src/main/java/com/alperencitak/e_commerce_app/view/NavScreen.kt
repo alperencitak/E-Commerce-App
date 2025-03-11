@@ -44,6 +44,9 @@ fun NavScreen(navController: NavHostController, paddingValues: PaddingValues) {
         composable("payment") {
             PaymentPage(navController)
         }
+        composable("order_success") {
+            OrderSuccessPage(navController)
+        }
         composable("products_by_category/{category_id}") { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("category_id")?.toIntOrNull() ?: 0
             ProductsByCategoryPage(navController, categoryId)
