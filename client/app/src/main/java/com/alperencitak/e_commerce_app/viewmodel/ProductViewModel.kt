@@ -252,11 +252,12 @@ class ProductViewModel @Inject constructor(
             try {
                 _loading.value = true
                 productRepository.clearCart()
+                _cartIds.value = emptyList()
+                _cart.value = emptyList()
             }catch (e: Exception){
                 e.printStackTrace()
             }finally {
                 _loading.value = false
-                getCartIds()
             }
         }
     }
