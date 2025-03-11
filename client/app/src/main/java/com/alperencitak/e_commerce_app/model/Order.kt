@@ -4,9 +4,9 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class Order(
-    val order_id: Int,
+    val order_id: Int = 0,
     val user_id: Int,
     val total_amount: BigDecimal,
     val status: String = "PENDING",
-    val order_date: String
+    val order_date: String?
 )
