@@ -22,6 +22,9 @@ interface OrderDetailApiService {
     @POST("order_detail/add")
     suspend fun add(@Body order_detail: OrderDetail): OrderDetail
 
+    @POST("order_detail/add-all")
+    suspend fun addAll(@Body order_details: List<OrderDetail>): List<OrderDetail>
+
     @DELETE("order_detail/delete/{id}")
     suspend fun deleteById(@Path("id") id: Int)
 

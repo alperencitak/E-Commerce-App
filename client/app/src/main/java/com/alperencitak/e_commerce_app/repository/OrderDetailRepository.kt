@@ -26,6 +26,10 @@ class OrderDetailRepository @Inject constructor(
         return api.add(orderDetail)
     }
 
+    suspend fun addAll(orderDetails: List<OrderDetail>): List<OrderDetail> {
+        return api.addAll(orderDetails)
+    }
+
     suspend fun deleteById(id: Int){
         return api.deleteById(id)
     }

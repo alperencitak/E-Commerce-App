@@ -3,6 +3,7 @@ package com.alperencitak.e_commerce_app.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alperencitak.e_commerce_app.model.OrderDetail
+import com.alperencitak.e_commerce_app.model.Product
 import com.alperencitak.e_commerce_app.repository.OrderDetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,6 +69,28 @@ class OrderDetailViewModel @Inject constructor(
             try {
                 _loading.value = true
                 _orderDetail.value = orderDetailRepository.add(orderDetail)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun addMany(orderId: Int, products: List<Product>){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                val orderDetails = products.map { product ->
+                    OrderDetail(
+                        order_id = orderId,
+                        product_id = product.product_id,
+                        quantity = 1,
+                        price = product.price
+                    )
+                }
+                println(orderDetails)
+                orderDetailRepository.addAll(orderDetails)
             }catch (e: Exception){
                 e.printStackTrace()
             }finally {
