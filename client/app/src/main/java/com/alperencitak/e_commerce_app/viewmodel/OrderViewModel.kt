@@ -3,6 +3,7 @@ package com.alperencitak.e_commerce_app.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alperencitak.e_commerce_app.model.Order
+import com.alperencitak.e_commerce_app.model.OrderRequest
 import com.alperencitak.e_commerce_app.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,11 +50,12 @@ class OrderViewModel @Inject constructor(
             }
         }
     }
-    fun add(order: Order){
+
+    fun add(orderRequest: OrderRequest){
         viewModelScope.launch {
             try {
                 _loading.value = true
-                _order.value = orderRepository.add(order)
+                _order.value = orderRepository.add(orderRequest)
             }catch (e: Exception){
                 e.printStackTrace()
             }finally {
