@@ -23,6 +23,13 @@ class OrdersResponse(MethodView):
         return OrderService.get_by_user_id(user_id)
 
 
+@order_bp.route("/details/<int:user_id>")
+class OrdersWithJoinResponse(MethodView):
+    @order_bp.response(HTTPStatus.OK)
+    def get(self, user_id):
+        return OrderService.get_by_id_with_join(user_id)
+
+
 @order_bp.route("/add")
 class AddOrderResponse(MethodView):
     @order_bp.response(HTTPStatus.CREATED, OrderSchema)
