@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alperencitak.e_commerce_app.model.Order
 import com.alperencitak.e_commerce_app.model.OrderRequest
+import com.alperencitak.e_commerce_app.model.OrderResponse
 import com.alperencitak.e_commerce_app.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,9 @@ class OrderViewModel @Inject constructor(
 
     private val _orderList = MutableStateFlow<List<Order>>(emptyList())
     val orderList: StateFlow<List<Order>> = _orderList
+
+    private val _orderResponseList = MutableStateFlow<List<OrderResponse>>(emptyList())
+    val orderResponseList: StateFlow<List<OrderResponse>> = _orderResponseList
 
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
@@ -43,6 +47,19 @@ class OrderViewModel @Inject constructor(
             try {
                 _loading.value = true
                 _orderList.value = orderRepository.fetchByUserId(user_id)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
+    fun fetchByUserIdWithJoin(user_id: Int){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                _orderResponseList.value = orderRepository.fetchByUserIdWithJoin(user_id)
             }catch (e: Exception){
                 e.printStackTrace()
             }finally {
