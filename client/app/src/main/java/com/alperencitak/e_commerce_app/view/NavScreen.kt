@@ -35,6 +35,9 @@ fun NavScreen(navController: NavHostController, paddingValues: PaddingValues) {
         composable("address") {
             AddressPage(navController)
         }
+        composable("my_orders") {
+            MyOrdersPage(navController)
+        }
         composable("favorites") {
             FavoritesPage(navController)
         }
