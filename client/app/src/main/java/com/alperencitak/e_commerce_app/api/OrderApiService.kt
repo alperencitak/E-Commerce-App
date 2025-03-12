@@ -2,6 +2,7 @@ package com.alperencitak.e_commerce_app.api
 
 import com.alperencitak.e_commerce_app.model.Order
 import com.alperencitak.e_commerce_app.model.OrderRequest
+import com.alperencitak.e_commerce_app.model.OrderResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -16,6 +17,9 @@ interface OrderApiService {
 
     @GET("order/user/{user_id}")
     suspend fun getByUserId(@Path("user_id") user_id: Int): List<Order>
+
+    @GET("order/details/{user_id}")
+    suspend fun getByUserIdWithJoin(@Path("user_id") user_id: Int): List<OrderResponse>
 
     @POST("order/add")
     suspend fun add(@Body orderRequest: OrderRequest): Order
