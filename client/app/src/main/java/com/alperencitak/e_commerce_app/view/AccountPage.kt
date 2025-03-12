@@ -87,7 +87,7 @@ fun AccountPage(navHostController: NavHostController) {
                 modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp)
             )
             ButtonRow(icon = Icons.Default.ShoppingCart, text = "My Orders"){
-
+                navHostController.navigate("my_orders")
             }
             ButtonRow(icon = Icons.Default.ArrowDropDown, text = "My Coupons"){
 
