@@ -4,6 +4,7 @@ import android.content.Context
 import com.alperencitak.e_commerce_app.api.OrderApiService
 import com.alperencitak.e_commerce_app.model.Order
 import com.alperencitak.e_commerce_app.model.OrderRequest
+import com.alperencitak.e_commerce_app.model.OrderResponse
 import javax.inject.Inject
 
 class OrderRepository @Inject constructor(
@@ -17,6 +18,10 @@ class OrderRepository @Inject constructor(
 
     suspend fun fetchByUserId(userId: Int): List<Order>{
         return api.getByUserId(userId)
+    }
+
+    suspend fun fetchByUserIdWithJoin(userId: Int): List<OrderResponse>{
+        return api.getByUserIdWithJoin(userId)
     }
 
     suspend fun add(orderRequest: OrderRequest): Order {
