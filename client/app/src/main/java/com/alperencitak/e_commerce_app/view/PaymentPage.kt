@@ -417,19 +417,25 @@ fun PaymentPage(navHostController: NavHostController) {
                             modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
                         )
                     }
+                    var text = "Confirm and Finish"
                     Button(
                         onClick = {
-                            val orderRequest = OrderRequest(
-                                user_id = user.value!!.user_id,
-                                total_amount = totalPrice.toBigDecimal()
-                            )
-                            orderViewModel.add(orderRequest)
+                            val outOfStockProducts = cart.value.filter { it.stock == 0 }
+                            if(outOfStockProducts.isEmpty()){
+                                val orderRequest = OrderRequest(
+                                    user_id = user.value!!.user_id,
+                                    total_amount = totalPrice.toBigDecimal()
+                                )
+                                orderViewModel.add(orderRequest)
+                            }else{
+                                text = "Out of stock."
+                            }
                         },
                         colors = ButtonDefaults.elevatedButtonColors(
                             containerColor = DarkPurple,
                         )
                     ) {
-                        Text(text = "Confirm and Finish", color = Color.White, fontFamily = font)
+                        Text(text = text, color = Color.White, fontFamily = font)
                     }
                 }
             }
