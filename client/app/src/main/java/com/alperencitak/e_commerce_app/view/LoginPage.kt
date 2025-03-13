@@ -82,7 +82,9 @@ fun LoginPage(navHostController: NavHostController) {
     LaunchedEffect(loginResponse.value) {
         when (loginResponse.value) {
             is Result.Success -> {
-                navHostController.navigate("main")
+                navHostController.navigate("main"){
+                    popUpTo("login"){ inclusive = true }
+                }
             }
             is Result.Error -> {
                 println("Error")
@@ -97,7 +99,9 @@ fun LoginPage(navHostController: NavHostController) {
     LaunchedEffect(registerResponse.value) {
         when (registerResponse.value) {
             is Result.Success -> {
-                navHostController.navigate("main")
+                navHostController.navigate("main"){
+                    popUpTo("login"){ inclusive = true }
+                }
             }
             is Result.Error -> {
                 println("Error")
