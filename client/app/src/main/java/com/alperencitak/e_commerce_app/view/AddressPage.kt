@@ -132,6 +132,10 @@ fun AddressPage(navHostController: NavHostController) {
                 .fillMaxWidth()
         ) {
             items(addressList.value) { address ->
+                if(addressList.value.size == 1 && user.value != null){
+                    val updatedUser = user.value!!.copy(current_address_id = address.address_id)
+                    userViewModel.update(updatedUser)
+                }
                 val openAlertDialog = remember { mutableStateOf(false) }
                 if (openAlertDialog.value) {
                     Dialog(
