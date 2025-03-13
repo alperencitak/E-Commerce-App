@@ -58,6 +58,7 @@ import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.White
 import com.alperencitak.e_commerce_app.utils.SmallProductCard
 import com.alperencitak.e_commerce_app.viewmodel.AddressViewModel
+import com.alperencitak.e_commerce_app.viewmodel.AuthViewModel
 import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
 
@@ -66,6 +67,8 @@ fun HomePage(navHostController: NavHostController) {
     val userViewModel: UserViewModel = hiltViewModel()
     val productViewModel: ProductViewModel = hiltViewModel()
     val addressViewModel: AddressViewModel = hiltViewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val currentUserId = authViewModel.currentUserId.collectAsState()
     val address = addressViewModel.address.collectAsState()
     val productList = productViewModel.productList.collectAsState()
     val user = userViewModel.user.collectAsState()
@@ -74,10 +77,21 @@ fun HomePage(navHostController: NavHostController) {
             R.font.montserrat_bold
         )
     )
+    authViewModel.getCurrentUserId()
     productViewModel.fetchBestSellers()
-    userViewModel.fetchUserById(101)
+    currentUserId.value?.let {
+        userViewModel.fetchUserById(it.toInt())
+    }
     user.value?.let {
         addressViewModel.fetchById(it.current_address_id)
+    }
+    var addressText = ""
+    address.value?.let {
+        if(it.city != null || it.country != null){
+            addressText = "${address.value!!.city}/${address.value!!.country}, ${address.value!!.address_line2}"
+        }else{
+            addressText = "No registered address."
+        }
     }
     val scrollState = rememberScrollState()
     Column(
@@ -108,7 +122,7 @@ fun HomePage(navHostController: NavHostController) {
                     modifier = Modifier.padding(start = 8.dp)
                 )
                 Text(
-                    text = if (address.value != null) "${address.value!!.city}/${address.value!!.country}, ${address.value!!.address_line2}" else "",
+                    text = addressText,
                     fontSize = 14.sp,
                     fontFamily = font,
                     minLines = 1,
