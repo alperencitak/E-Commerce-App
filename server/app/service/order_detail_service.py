@@ -34,17 +34,9 @@ class OrderDetailService:
 
     @classmethod
     def add_all(cls, data):
-        try:
-            # Log data before adding to the session
-            print(f"Adding the following order details to the database: {data}")
-            db.session.add_all(data)
-            db.session.commit()
-            print(f"Order details successfully added: {data}")
-            return {"success": "Added Order Details"}
-        except Exception as e:
-            db.session.rollback()
-            print(f"Error occurred: {str(e)}")
-            raise
+        db.session.add_all(data)
+        db.session.commit()
+        return {"success": "Added Order Details"}
 
     @classmethod
     def delete_by_id(cls, order_detail_id):
