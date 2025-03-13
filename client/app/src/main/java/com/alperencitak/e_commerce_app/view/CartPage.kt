@@ -108,6 +108,9 @@ fun CartPage(navHostController: NavHostController, paddingValues: PaddingValues)
                     .padding(start = 16.dp, end = 16.dp)
             ) {
                 items(cart.value) { product ->
+                    if(product.stock < 1){
+                        productViewModel.removeCart(product.product_id.toString())
+                    }
                     val openAlertDialog = remember { mutableStateOf(false) }
                     if(openAlertDialog.value){
                         Dialog(
