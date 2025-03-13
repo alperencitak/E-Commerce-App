@@ -33,6 +33,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.LightCream
+import com.alperencitak.e_commerce_app.ui.theme.SmoothRed
 import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 
 
@@ -113,17 +114,28 @@ fun ProductPage(navHostController: NavHostController, productId: Int) {
                     }
                 }
             )
-            Icon(
-                imageVector = Icons.Filled.ShoppingCart,
-                contentDescription = "Cart Icon",
-                modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp).clickable {
-                    val id = productId.toString()
-                    if(!cartIds.value.contains(id)){
-                        productViewModel.addCart(id)
-                        navHostController.navigate("cart")
+            if(it.stock < 1){
+                Text(
+                    text = "Out of stock",
+                    fontSize = 18.sp,
+                    fontFamily = font,
+                    color = SmoothRed,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
+                )
+            }else{
+                Icon(
+                    imageVector = Icons.Filled.ShoppingCart,
+                    contentDescription = "Cart Icon",
+                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp).clickable {
+                        val id = productId.toString()
+                        if(!cartIds.value.contains(id)){
+                            productViewModel.addCart(id)
+                            navHostController.navigate("cart")
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
