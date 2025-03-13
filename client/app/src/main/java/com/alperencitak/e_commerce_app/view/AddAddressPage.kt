@@ -8,19 +8,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SegmentedButton
@@ -39,8 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,16 +42,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.model.Address
-import com.alperencitak.e_commerce_app.ui.theme.Blue
-import com.alperencitak.e_commerce_app.ui.theme.DarkGreen
 import com.alperencitak.e_commerce_app.ui.theme.DarkPurple
 import com.alperencitak.e_commerce_app.ui.theme.DarkerSoftBeige
-import com.alperencitak.e_commerce_app.ui.theme.Gray
-import com.alperencitak.e_commerce_app.ui.theme.LightCream
 import com.alperencitak.e_commerce_app.ui.theme.Purple
-import com.alperencitak.e_commerce_app.ui.theme.SoftBeige
 import com.alperencitak.e_commerce_app.ui.theme.White
-import com.alperencitak.e_commerce_app.ui.theme.WhiteModern
 import com.alperencitak.e_commerce_app.viewmodel.AddressViewModel
 import com.alperencitak.e_commerce_app.viewmodel.AuthViewModel
 import com.alperencitak.e_commerce_app.viewmodel.UserViewModel
@@ -69,8 +57,6 @@ fun AddAddressPage(navHostController: NavHostController){
     val addressViewModel: AddressViewModel = hiltViewModel()
     val authViewModel: AuthViewModel = hiltViewModel()
     val currentUserId = authViewModel.currentUserId.collectAsState()
-    val user = userViewModel.user.collectAsState()
-    val address = addressViewModel.address.collectAsState()
     val font = FontFamily(
         Font(R.font.montserrat_bold)
     )
@@ -133,6 +119,7 @@ fun AddAddressPage(navHostController: NavHostController){
                 onValueChange = {
                     if (it.length <= 100) {
                         country = it
+                        countryError = false
                     }
                 },
                 label = { Text("Country", fontFamily = font) },
@@ -152,6 +139,7 @@ fun AddAddressPage(navHostController: NavHostController){
                 onValueChange = {
                     if (it.length <= 100) {
                         city = it
+                        cityError = false
                     }
                 },
                 label = { Text("City", fontFamily = font) },
@@ -178,6 +166,7 @@ fun AddAddressPage(navHostController: NavHostController){
                 onValueChange = {
                     if (it.length <= 100) {
                         district = it
+                        districtError = false
                     }
                 },
                 label = { Text("District", fontFamily = font) },
@@ -221,6 +210,7 @@ fun AddAddressPage(navHostController: NavHostController){
             onValueChange = {
                 if (it.length <= 255) {
                     line2 = it
+                    line2Error = false
                 }
             },
             label = { Text("Line 2", fontFamily = font) },
@@ -237,17 +227,33 @@ fun AddAddressPage(navHostController: NavHostController){
         )
         Button(
             onClick = {
-                currentUserId.value?.let {
-                    val address = Address(
-                        user_id = it.toInt(),
-                        address_line1 = line1[line1SelectedIndex],
-                        address_line2 = line2,
-                        district = district,
-                        city = city,
-                        country = country
-                    )
-                    addressViewModel.add(address)
-                    navHostController.popBackStack()
+                if(country.length < 2){
+                    countryError = true
+                }else{
+                    if(city.length < 2){
+                        cityError = true
+                    }else{
+                        if(district.length < 2){
+                            districtError = true
+                        }else{
+                            if(line2.length < 10){
+                                line2Error = true
+                            }else{
+                                currentUserId.value?.let {
+                                    val address = Address(
+                                        user_id = it.toInt(),
+                                        address_line1 = line1[line1SelectedIndex],
+                                        address_line2 = line2,
+                                        district = district,
+                                        city = city,
+                                        country = country
+                                    )
+                                    addressViewModel.add(address)
+                                    navHostController.popBackStack()
+                                }
+                            }
+                        }
+                    }
                 }
             },
             modifier = Modifier
