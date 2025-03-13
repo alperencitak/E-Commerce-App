@@ -89,7 +89,6 @@ class OrderDetailViewModel @Inject constructor(
                         price = product.price
                     )
                 }
-                println(orderDetails)
                 orderDetailRepository.addAll(orderDetails)
             }catch (e: Exception){
                 e.printStackTrace()
