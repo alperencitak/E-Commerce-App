@@ -10,31 +10,23 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -72,7 +64,7 @@ import com.alperencitak.e_commerce_app.viewmodel.ProductViewModel
 @Composable
 fun ProductPage(navHostController: NavHostController, productId: Int) {
     val productViewModel: ProductViewModel = hiltViewModel()
-    val productResponse = productViewModel.productResponse.collectAsState()
+    val productList = productViewModel.productList.collectAsState()
     val product = productViewModel.product.collectAsState()
     val favorites = productViewModel.favoriteIds.collectAsState()
     val cartIds = productViewModel.cartIds.collectAsState()
@@ -82,9 +74,7 @@ fun ProductPage(navHostController: NavHostController, productId: Int) {
     productViewModel.getFavoriteIds()
     productViewModel.getCartIds()
     productViewModel.fetchById(productId)
-    product.value?.let {
-        productViewModel.fetchByCategoryId(it.category_id)
-    }
+    productViewModel.fetchRecommends(productId)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -287,41 +277,39 @@ fun ProductPage(navHostController: NavHostController, productId: Int) {
                         }
                     }
                 }
-                productResponse.value?.let {
-                    ElevatedCard(
+                ElevatedCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp)
+                        .shadow(
+                            elevation = 8.dp,
+                            ambientColor = Purple,
+                            spotColor = Purple
+                        ),
+                    shape = RectangleShape,
+                    elevation = CardDefaults.cardElevation(8.dp)
+                ) {
+                    Text(
+                        text = "Similar Products",
+                        lineHeight = 15.sp,
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = 17.sp,
+                        fontFamily = font,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp)
+                    )
+                    HorizontalDivider(
+                        color = Color.LightGray,
+                        thickness = 1.dp,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    LazyRow(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 12.dp)
-                            .shadow(
-                                elevation = 8.dp,
-                                ambientColor = Purple,
-                                spotColor = Purple
-                            ),
-                        shape = RectangleShape,
-                        elevation = CardDefaults.cardElevation(8.dp)
+                            .padding(top = 8.dp, bottom = 16.dp)
                     ) {
-                        Text(
-                            text = "Similar Products",
-                            lineHeight = 15.sp,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 17.sp,
-                            fontFamily = font,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp)
-                        )
-                        HorizontalDivider(
-                            color = Color.LightGray,
-                            thickness = 1.dp,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        LazyRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp, bottom = 16.dp)
-                        ) {
-                            items(it.products) { product ->
-                                SmallProductCard(product, navHostController)
-                            }
+                        items(productList.value) { product ->
+                            SmallProductCard(product, navHostController)
                         }
                     }
                 }
