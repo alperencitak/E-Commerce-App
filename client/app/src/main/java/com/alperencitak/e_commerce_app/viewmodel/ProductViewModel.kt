@@ -92,6 +92,19 @@ class ProductViewModel @Inject constructor(
         }
     }
 
+    fun fetchRecommends(productId: Int, top: Int = 10){
+        viewModelScope.launch {
+            try {
+                _loading.value = true
+                _productList.value = productRepository.fetchRecommends(productId, top)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }finally {
+                _loading.value = false
+            }
+        }
+    }
+
     fun add(product: Product){
         viewModelScope.launch {
             try {

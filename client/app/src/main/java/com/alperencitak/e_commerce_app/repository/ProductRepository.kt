@@ -24,6 +24,10 @@ class ProductRepository @Inject constructor(
         return api.getBestSellers()
     }
 
+    suspend fun fetchRecommends(productId: Int, top: Int = 10): List<Product>{
+        return api.getRecommends(productId, top)
+    }
+
     suspend fun add(product: Product): Product {
         return api.add(product)
     }

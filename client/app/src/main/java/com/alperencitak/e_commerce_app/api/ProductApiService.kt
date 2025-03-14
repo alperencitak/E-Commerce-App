@@ -13,7 +13,7 @@ import retrofit2.http.Query
 interface ProductApiService {
 
     @GET("product/{id}")
-    suspend fun getById(@Path("id") id:Int): Product
+    suspend fun getById(@Path("id") id: Int): Product
 
     @GET("product/category/{category_id}")
     suspend fun getByCategoryId(
@@ -24,6 +24,12 @@ interface ProductApiService {
 
     @GET("product/bestsellers")
     suspend fun getBestSellers(): List<Product>
+
+    @GET("product/recommend/{product_id}")
+    suspend fun getRecommends(
+        @Path("product_id") productId: Int,
+        @Query("top_n") top: Int = 10
+    ): List<Product>
 
     @POST("product/add")
     suspend fun add(@Body product: Product): Product
