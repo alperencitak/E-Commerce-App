@@ -16,6 +16,14 @@ class ProductResponse(MethodView):
         return ProductService.get_by_id(product_id)
 
 
+@product_bp.route("/recommend/<int:product_id>")
+class RecommendProductResponse(MethodView):
+    @product_bp.response(HTTPStatus.OK, ProductSchema(many=True))
+    def get(self, product_id):
+        top_n = request.args.get("top_n", default=5, type=int)
+        return ProductService.recommend_products(product_id, top_n)
+
+
 @product_bp.route("/category/<int:category_id>")
 class ProductWithCategoryResponse(MethodView):
     @product_bp.response(HTTPStatus.OK, PaginationSchema)
