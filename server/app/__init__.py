@@ -31,6 +31,7 @@ def create_app():
     from .api.order_detail_api import order_detail_bp
     from .api.auth_api import auth_bp
     from .api.image_api import image_bp
+    from .api.chat_bot_api import chat_bot_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
@@ -40,5 +41,6 @@ def create_app():
     app.register_blueprint(product_bp)
     app.register_blueprint(order_detail_bp)
     app.register_blueprint(image_bp)
+    app.register_blueprint(chat_bot_bp)
 
     return app
