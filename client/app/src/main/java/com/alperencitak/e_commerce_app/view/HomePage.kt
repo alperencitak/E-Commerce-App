@@ -2,6 +2,7 @@ package com.alperencitak.e_commerce_app.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,11 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -46,10 +51,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.alperencitak.e_commerce_app.R
 import com.alperencitak.e_commerce_app.ui.theme.DarkPurple
+import com.alperencitak.e_commerce_app.ui.theme.Gray
 import com.alperencitak.e_commerce_app.ui.theme.LightPurple
 import com.alperencitak.e_commerce_app.ui.theme.White
 import com.alperencitak.e_commerce_app.utils.SmallProductCard
@@ -101,6 +108,25 @@ fun HomePage(navHostController: NavHostController) {
         }
     }
     val scrollState = rememberScrollState()
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 32.dp)
+            .zIndex(1f),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.Top
+    ) {
+        Image(
+            painter = painterResource(R.drawable.assistant),
+            contentDescription = "Assistant Icon",
+            modifier = Modifier
+                .size(84.dp)
+                .padding(4.dp)
+                .clickable {
+                    navHostController.navigate("assistant")
+                },
+        )
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -144,7 +170,7 @@ fun HomePage(navHostController: NavHostController) {
             text = "Best Sellers",
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 16.dp, bottom = 8.dp, top = 16.dp)
+            modifier = Modifier.padding(start = 16.dp, bottom = 4.dp, top = 16.dp)
         )
         LazyRow(
             modifier = Modifier
@@ -161,7 +187,7 @@ fun HomePage(navHostController: NavHostController) {
                 text = "Laptops",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
             LazyRow(
                 modifier = Modifier
@@ -183,13 +209,7 @@ fun HomePage(navHostController: NavHostController) {
                     )
                 )
         ) {
-            Column(
-                modifier = Modifier.padding(
-                    top = 32.dp, bottom = 64.dp, start = 32.dp, end = 32.dp
-                ), verticalArrangement = Arrangement.Center
-            ) {
-                Spacer(modifier = Modifier.height(512.dp))
-            }
+            Spacer(modifier = Modifier.height(128.dp))
         }
     }
 }
