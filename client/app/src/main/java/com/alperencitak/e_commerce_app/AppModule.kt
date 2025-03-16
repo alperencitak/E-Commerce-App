@@ -5,6 +5,7 @@ import android.content.Context
 import com.alperencitak.e_commerce_app.api.AddressApiService
 import com.alperencitak.e_commerce_app.api.AuthApiService
 import com.alperencitak.e_commerce_app.api.CategoryApiService
+import com.alperencitak.e_commerce_app.api.ChatBotService
 import com.alperencitak.e_commerce_app.api.OrderApiService
 import com.alperencitak.e_commerce_app.api.OrderDetailApiService
 import com.alperencitak.e_commerce_app.api.ProductApiService
@@ -57,6 +58,11 @@ class AppModule {
     @Provides
     fun provideOrderDetailApiService(): OrderDetailApiService{
         return RetrofitInstance.orderDetailApi
+    }
+
+    @Provides
+    fun provideChatBotApiService(): ChatBotService{
+        return RetrofitInstance.chatBotApi
     }
 
 }
